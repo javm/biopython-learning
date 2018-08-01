@@ -20,13 +20,13 @@ anotation = anotation.readlines()
 
 # PART 1.2: REMOVE 1ST CHARACTER OF THE FILE CONTIGS.TXT
 
-for i in range(0,len(contigs_lines)):
-    #print(contigs_lines[i])
-    if (i % 2) == 0:
-        contig = contigs_lines[i].lstrip('>')
-        contig = contig.strip().split()
-        row = {'id': contig[0], 'len': contig[3].split('=')[1]}
-        print(row)
+for i in range(0, len(contigs_lines) - 1, 2):
+    contig = contigs_lines[i].lstrip('>')
+    contig = contig.strip().split()
+    row = {'id': contig[0], 'len': contig[3].split('=')[1]}
+    sequence = contigs_lines[i+1].strip()
+    row['seq'] = sequence
+    print(row)
 
 #lista_1 = {}
 #lista_2 = {}
