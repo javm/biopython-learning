@@ -28,14 +28,18 @@ for i in range(0, len(contigs_lines) - 1, 2):
     row['seq'] = sequence
     print(row)
 
-#lista_1 = {}
-#lista_2 = {}
-#repetidos = []
-#no_repetidos = []
+# {k_101: {len: 123, seq: 'fsdfsdf'}, k_104: {}}
+# {k_101: [{}, {}, {}]}
 
-#i=0
-#while i<len(A1)-1:
-#        lista_1[A1[1]
-#for element in A1:
-#        b_names[element]=A1[i]
-#        i=i+1
+exon_hash = {}
+for i in range(0, (len(exons_lines) -1)):
+    exon_values = exons_lines[i].strip().split()
+    id = exon_values[0];
+    if(exon_hash[id]):
+        #
+    else:
+        exon_hash[id] = {
+            intervalo_a: exon_values[3],
+            intervalo_b: exon_values[4],
+            direction: exon_values[6],
+        }
