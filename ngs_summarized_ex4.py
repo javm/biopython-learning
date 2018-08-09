@@ -20,12 +20,33 @@ annotation = open('annotation.txt', 'r')
 data = open('summarized.txt','w')
 data_contigs = []
 # PART 1.1: OPEN BY LINES
-
 contigs_lines = contigs.readlines()
 exons_lines = exons.readlines()
 nucleotides_lines = nucleotides.readlines()
 proteins_lines = proteins.readlines()
 annotation = annotation.readlines()
+gen_sequences = {}
+# Reading gen sequences
+def read_gen_sequence(gen_sequences_out, sequence_name, lines):
+    for i in range(0, len(lines), 2):
+
+        gen_id = lines[i].lstrip('>')
+        gen_id = gen_id.strip()
+        if(not gen_sequences.has_key(gen_id)):
+            gen_sequences_out[gen_id] = {}
+        gen_sequences_out[gen_id][sequence_name] = ''
+        sequence = lines[i+1].strip()
+        gen_sequences_out[gen_id][sequence_name] = sequence
+    #print(gen_sequences_out)
+    #return gen_sequences_out
+
+#gent_sequences =
+read_gen_sequence(gen_sequences, 'prot_sequnce', proteins_lines)
+#gen_sequences =
+read_gen_sequence(gen_sequences, 'nuc_sequence', nucleotides_lines)
+
+
+print(gen_sequences)
 
 # PART 2:
 
@@ -64,19 +85,26 @@ for i in range(0, (len(data_contigs))):
     contig_exons = exon_hash[contig_id]
     # Crear un funcion para formato
     intervals = []
+
     for j in range(0, (len(contig_exons))):
         current = contig_exons[j]
+
         interval_data = [ current['gen_id'],
             ("-".join( [current['intervalo_a'],current['intervalo_b']])),
             current['direction'],
             current['num']
         ]
+        # TODO: add the nuc and prot sequences
         interval = ";".join(interval_data)
+        # if(current['gen_id'] == contig_exons[j+1]['gend_id']):
         intervals.append(interval)
+        #else:
+        # intervals[last].
 
     s_intervals = "|".join(intervals)
+
     sequence = data_contigs[i]['seq']
-    line = contig_id+"\tlen="+data_contigs[i]['len']+"\t"+s_intervals+" \t"+sequence+"\n"
+    line = contig_id+"\tlen="+data_contigs[i]['len']+"\t"+s_intervals+"\n"
     print(line)
     data.write(line)
 data.close()
