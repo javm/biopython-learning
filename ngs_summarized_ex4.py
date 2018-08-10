@@ -41,12 +41,20 @@ def read_gen_sequence(gen_sequences_out, sequence_name, lines):
     #return gen_sequences_out
 
 #gent_sequences =
-read_gen_sequence(gen_sequences, 'prot_sequnce', proteins_lines)
+read_gen_sequence(gen_sequences, 'prot', proteins_lines)
 #gen_sequences =
-read_gen_sequence(gen_sequences, 'nuc_sequence', nucleotides_lines)
+read_gen_sequence(gen_sequences, 'nuc', nucleotides_lines)
 
-
+# {'1_g: {'nuc': 'AGTC...', 'prot': 'GTCAA...'}}
 print(gen_sequences)
+
+def add_sequences(intervals, gen_sequences, gen_id):
+    if(gen_sequences.has_key(gen_id)):
+        intervals.append("\t".join([
+            gen_sequences[current_gen_id]['nuc'],
+            gen_sequences[current_gen_id]['prot']
+        ]))
+
 
 # PART 2:
 
@@ -88,19 +96,23 @@ for i in range(0, (len(data_contigs))):
 
     for j in range(0, (len(contig_exons))):
         current = contig_exons[j]
+        current_gen_id = current['gen_id']
 
-        interval_data = [ current['gen_id'],
-            ("-".join( [current['intervalo_a'],current['intervalo_b']])),
+        interval_data = [ current_gen_id,
+            ("-".join( [current['intervalo_a'],
+            current['intervalo_b']])),
             current['direction'],
             current['num']
         ]
-        # TODO: add the nuc and prot sequences
         interval = ";".join(interval_data)
-        # if(current['gen_id'] == contig_exons[j+1]['gend_id']):
         intervals.append(interval)
-        #else:
-        # intervals[last].
 
+        if( (len(contig_exons) - 1) == j):
+            add_sequences(intervals, gen_sequences, current_gen_id)
+        else:
+            next_gen_id = contig_exons[j+1]['gen_id']
+            if(not (current_gen_id == next_gen_id)):
+                add_sequences(intervals, gen_sequences, current_gen_id)
     s_intervals = "|".join(intervals)
 
     sequence = data_contigs[i]['seq']
