@@ -48,13 +48,14 @@ read_gen_sequence(gen_sequences, 'nuc', nucleotides_lines)
 # {'1_g: {'nuc': 'AGTC...', 'prot': 'GTCAA...'}}
 print(gen_sequences)
 
-def add_sequences(intervals, gen_sequences, gen_id):
+def get_sequences(gen_sequences, gen_id):
+    sequences = ""
     if(gen_sequences.has_key(gen_id)):
-        intervals.append("\t".join([
+        sequences =  "\t".join([
             gen_sequences[current_gen_id]['nuc'],
             gen_sequences[current_gen_id]['prot']
-        ]))
-
+        ])
+    return sequences
 
 # PART 2:
 
@@ -93,6 +94,7 @@ for i in range(0, (len(data_contigs))):
     contig_exons = exon_hash[contig_id]
     # Crear un funcion para formato
     intervals = []
+    s_intervals = ""
 
     for j in range(0, (len(contig_exons))):
         current = contig_exons[j]
@@ -107,13 +109,16 @@ for i in range(0, (len(data_contigs))):
         interval = ";".join(interval_data)
         intervals.append(interval)
 
+        sequences = ""
         if( (len(contig_exons) - 1) == j):
-            add_sequences(intervals, gen_sequences, current_gen_id)
+            sequences = get_sequences(gen_sequences, current_gen_id)
+            s_intervals = s_intervals + "\t".join(["|".join(intervals), sequences])
         else:
             next_gen_id = contig_exons[j+1]['gen_id']
             if(not (current_gen_id == next_gen_id)):
-                add_sequences(intervals, gen_sequences, current_gen_id)
-    s_intervals = "|".join(intervals)
+                sequences = get_sequences(gen_sequences, current_gen_id)
+                s_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
+                intervals = []
 
     sequence = data_contigs[i]['seq']
     line = contig_id+"\tlen="+data_contigs[i]['len']+"\t"+s_intervals+"\n"
