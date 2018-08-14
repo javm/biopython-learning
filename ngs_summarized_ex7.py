@@ -26,6 +26,35 @@ nucleotides_lines = nucleotides.readlines()
 proteins_lines = proteins.readlines()
 annotation = annotation.readlines()
 gen_sequences = {}
+
+# Reading annotation
+def read_annotation(annotation_lines):
+    annotation_data = []
+    for i in range(0, len(annotation_lines)):
+        annotation_h = {}
+        data = annotation_lines[i].strip().split()
+        #print(data)
+        annotation_h['gen_id'] = data[0]
+        annotation_h['global'] = data[6]
+        annotation_data.append(annotation_h)
+    print(annotation_data)
+
+#for i in range(0, len(contigs_lines), 2):
+#    contig = contigs_lines[i].lstrip('>')
+#    contig = contig.strip().split()
+#    row = {'id': contig[0], 'len': contig[3].split('=')[1]}
+#    sequence = contigs_lines[i+1].strip()
+#    row['seq'] = sequence
+    #print(row)
+#    data_contigs.append(row)
+
+
+
+
+
+
+
+
 # Reading gen sequences
 def read_gen_sequence(gen_sequences_out, sequence_name, lines):
     for i in range(0, len(lines), 2):
@@ -48,13 +77,14 @@ read_gen_sequence(gen_sequences, 'nuc', nucleotides_lines)
 # {'1_g: {'nuc': 'AGTC...', 'prot': 'GTCAA...'}}
 print(gen_sequences)
 
-def add_sequences(intervals, gen_sequences, gen_id):
+def get_sequences(gen_sequences, gen_id):
+    sequences = ""
     if(gen_sequences.has_key(gen_id)):
-        intervals.append("\t".join([
+        sequences =  "\t".join([
             gen_sequences[current_gen_id]['nuc'],
             gen_sequences[current_gen_id]['prot']
-        ]))
-
+        ])
+    return sequences
 
 # PART 2:
 
@@ -93,6 +123,7 @@ for i in range(0, (len(data_contigs))):
     contig_exons = exon_hash[contig_id]
     # Crear un funcion para formato
     intervals = []
+    s_intervals = ""
 
     for j in range(0, (len(contig_exons))):
         current = contig_exons[j]
@@ -107,16 +138,21 @@ for i in range(0, (len(data_contigs))):
         interval = ";".join(interval_data)
         intervals.append(interval)
 
+        sequences = ""
         if( (len(contig_exons) - 1) == j):
-            add_sequences(intervals, gen_sequences, current_gen_id)
+            sequences = get_sequences(gen_sequences, current_gen_id)
+            s_intervals = s_intervals + "\t".join(["|".join(intervals), sequences])
         else:
             next_gen_id = contig_exons[j+1]['gen_id']
             if(not (current_gen_id == next_gen_id)):
-                add_sequences(intervals, gen_sequences, current_gen_id)
-    s_intervals = "|".join(intervals)
+                sequences = get_sequences(gen_sequences, current_gen_id)
+                s_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
+                intervals = []
 
     sequence = data_contigs[i]['seq']
     line = contig_id+"\tlen="+data_contigs[i]['len']+"\t"+s_intervals+"\n"
     print(line)
     data.write(line)
 data.close()
+
+read_annotation(annotation)
