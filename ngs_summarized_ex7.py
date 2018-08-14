@@ -16,16 +16,19 @@ exons = open('exons.txt', 'r')
 nucleotides = open('nuc.txt', 'r')
 proteins = open('prot.txt', 'r')
 annotation = open('annotation.txt', 'r')
-# Files to write
+# File to write
 data = open('summarized.txt','w')
-data_contigs = []
+
 # PART 1.1: OPEN BY LINES
+
 contigs_lines = contigs.readlines()
 exons_lines = exons.readlines()
 nucleotides_lines = nucleotides.readlines()
 proteins_lines = proteins.readlines()
 annotation = annotation.readlines()
 gen_sequences = {}
+
+# PART 2: SOME HASHES
 
 # Reading annotation
 def read_annotation(annotation_lines):
@@ -39,22 +42,6 @@ def read_annotation(annotation_lines):
         annotation_data.append(annotation_h)
     print(annotation_data)
 
-#for i in range(0, len(contigs_lines), 2):
-#    contig = contigs_lines[i].lstrip('>')
-#    contig = contig.strip().split()
-#    row = {'id': contig[0], 'len': contig[3].split('=')[1]}
-#    sequence = contigs_lines[i+1].strip()
-#    row['seq'] = sequence
-    #print(row)
-#    data_contigs.append(row)
-
-
-
-
-
-
-
-
 # Reading gen sequences
 def read_gen_sequence(gen_sequences_out, sequence_name, lines):
     for i in range(0, len(lines), 2):
@@ -66,14 +53,11 @@ def read_gen_sequence(gen_sequences_out, sequence_name, lines):
         gen_sequences_out[gen_id][sequence_name] = ''
         sequence = lines[i+1].strip()
         gen_sequences_out[gen_id][sequence_name] = sequence
-    #print(gen_sequences_out)
-    #return gen_sequences_out
 
-#gent_sequences =
+#gen_sequences =
 read_gen_sequence(gen_sequences, 'prot', proteins_lines)
 #gen_sequences =
 read_gen_sequence(gen_sequences, 'nuc', nucleotides_lines)
-
 # {'1_g: {'nuc': 'AGTC...', 'prot': 'GTCAA...'}}
 print(gen_sequences)
 
@@ -86,7 +70,7 @@ def get_sequences(gen_sequences, gen_id):
         ])
     return sequences
 
-# PART 2:
+data_contigs = []
 
 for i in range(0, len(contigs_lines), 2):
     contig = contigs_lines[i].lstrip('>')
@@ -102,6 +86,8 @@ for i in range(0, (len(exons_lines))):
     exon_values = exons_lines[i].strip().split()
     id = exon_values[0];
     gen_id = exon_values[9][1:-2]
+
+# PART 3: OUTPUT
 
     data_exon = {
             'intervalo_a': exon_values[3],
