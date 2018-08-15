@@ -8,6 +8,8 @@
 # nucleotides,proteins and genes predictions.
 # -----------------------------------------------------------
 
+import re
+
 # PART 1: OPEN FILES
 
 # Test files
@@ -19,6 +21,8 @@ annotation = open('annotation.txt', 'r')
 # File to write
 data = open('summarized.txt','w')
 
+
+groups = ['Eukaryota', 'Prokaryota', 'Virus']
 # PART 1.1: OPEN BY LINES
 
 contigs_lines = contigs.readlines()
@@ -35,10 +39,18 @@ def read_annotation(annotation_lines):
     annotation_data = []
     for i in range(0, len(annotation_lines)):
         annotation_h = {}
+        data4full = re.split('\d+\-\d+\[(\+|\-)\]', annotation_lines[i].strip())
         data = annotation_lines[i].strip().split()
         #print(data)
         annotation_h['gen_id'] = data[0]
-        annotation_h['global'] = data[6]
+        group_data = re.match('\^(Eukaryota|Prokaryota|Virus)', data4full[-1])
+        print(group_data)
+        annotation_h['global'] = {'interval_prot': data[6],
+         'data1': data[7],
+         'full': data4full[-1],
+         'clasified': group_data
+         }
+
         annotation_data.append(annotation_h)
     print(annotation_data)
 
