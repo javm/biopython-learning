@@ -20,6 +20,7 @@ proteins = open('prot.txt', 'r')
 annotation = open('annotation.txt', 'r')
 # File to write
 data = open('summarized.txt','w')
+unclasified = open('unclasified_txt', 'w')
 
 
 groups = ['Eukaryota', 'Prokaryota', 'Virus']
@@ -36,23 +37,31 @@ gen_sequences = {}
 
 # Reading annotation
 def read_annotation(annotation_lines):
-    annotation_data = []
+    data_annotation = []
     for i in range(0, len(annotation_lines)):
         annotation_h = {}
         data4full = re.split('\d+\-\d+\[(\+|\-)\]', annotation_lines[i].strip())
         data = annotation_lines[i].strip().split()
         #print(data)
         annotation_h['gen_id'] = data[0]
-        group_data = re.match('\^(Eukaryota|Prokaryota|Virus)', data4full[-1])
-        print(group_data)
+        group_data = re.search('\^(Eukaryota|Prokaryota|Archaea|Virus|Bacteria)', data4full[-1])
+        if group_data:
+            g = group_data.group()
+        else:
+            g = False
+            unclasified.write(annotation_lines[i])
         annotation_h['global'] = {'interval_prot': data[6],
          'data1': data[7],
          'full': data4full[-1],
-         'clasified': group_data
+         'clasified': g
          }
 
-        annotation_data.append(annotation_h)
-    print(annotation_data)
+        data_annotation.append(annotation_h)
+    unclasified.close()
+    for a in data_annotation:
+        print "%s\n"%(a)
+    return data_annotation
+
 
 # Reading gen sequences
 def read_gen_sequence(gen_sequences_out, sequence_name, lines):
@@ -72,6 +81,13 @@ read_gen_sequence(gen_sequences, 'prot', proteins_lines)
 read_gen_sequence(gen_sequences, 'nuc', nucleotides_lines)
 # {'1_g: {'nuc': 'AGTC...', 'prot': 'GTCAA...'}}
 print(gen_sequences)
+
+annotations_list = read_annotation(annotation)
+annotation_global = {}
+print annotations_list[1]
+for i in range(len(annotations_list)):
+    a = annotations_list[i]
+    annotation_global['gen_id'] = {'gen_id': a['gen_id'], 'global': a['global']}
 
 def get_sequences(gen_sequences, gen_id):
     sequences = ""
@@ -147,10 +163,12 @@ for i in range(0, (len(data_contigs))):
                 s_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
                 intervals = []
 
-    sequence = data_contigs[i]['seq']
-    line = contig_id+"\tlen="+data_contigs[i]['len']+"\t"+s_intervals+"\n"
+    #sequence = data_contigs[i]['seq']
+    #current_annotation = annotation_global[contig_id]['gobal']
+    # {'1_g': {global: {}}, '2g': {global: {} }}
+    #annotation_line_data = "\t"+current_annotation['interval_prot']+"\t"+current_annotation['data1']+"\t"+current_annotation['full']
+    annotation_line_data = ""
+    line = contig_id+"\tlen="+data_contigs[i]['len']+"\t"+s_intervals+annotation_line_data+"\n"
     print(line)
     data.write(line)
 data.close()
-
-read_annotation(annotation)
