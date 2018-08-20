@@ -57,7 +57,7 @@ def read_annotation(annotation_lines):
          }
 
         data_annotation.append(annotation_h)
-    unclasified.close()
+
     for a in data_annotation:
         print "%s\n"%(a)
     return data_annotation
@@ -100,47 +100,51 @@ def get_sequences(gen_id, gen_sequences, annotation_g):
             ])
     return sequences
 
-data_contigs = []
+def read_contigs():
+    data_contigs = []
+    for i in range(0, len(contigs_lines), 2):
+        contig = contigs_lines[i].lstrip('>')
+        contig = contig.strip().split()
+        row = {'id': contig[0], 'len': contig[3].split('=')[1]}
+        #sequence = contigs_lines[i+1].strip()
+        #row['seq'] = sequence
+        #print(row)
+        data_contigs.append(row)
+    return data_contigs
 
-for i in range(0, len(contigs_lines), 2):
-    contig = contigs_lines[i].lstrip('>')
-    contig = contig.strip().split()
-    row = {'id': contig[0], 'len': contig[3].split('=')[1]}
-    sequence = contigs_lines[i+1].strip()
-    row['seq'] = sequence
-    #print(row)
-    data_contigs.append(row)
-
-exon_hash = {}
-
-for i in range(0, (len(exons_lines))):
-    exon_values = exons_lines[i].strip().split()
-    id = exon_values[0];
-    gen_id = exon_values[9][1:-2]
-
-# PART 3: OUTPUT
-
-    data_exon = {
+def read_exons():
+    exon_hash = {}
+    for i in range(0, (len(exons_lines))):
+        exon_values = exons_lines[i].strip().split()
+        contig_id = exon_values[0];
+        gen_id = exon_values[9][1:-2]
+        # PART 3: OUTPUT
+        data_exon = {
             'intervalo_a': exon_values[3],
             'intervalo_b': exon_values[4],
             'direction': exon_values[6],
             'num': exon_values[7],
             'gen_id': gen_id
         }
+        if (exon_hash.has_key(contig_id)):
+            # El arreglo no es vacio
+            exon_hash[contig_id].append(data_exon)
+        else:
+            exon_hash[contig_id] = [data_exon]
+    return exon_hash
 
-    if (exon_hash.has_key(id)):
-        # El arreglo no es vacio
-        exon_hash[id].append(data_exon)
-    else:
-        exon_hash[id] = [data_exon]
+#annotation global
+def read_annotation_global():
+    annotations_list = read_annotation(annotation)
+    annotation_global = {}
+    #print annotations_list[1]
+    for i in range(len(annotations_list)):
+        a = annotations_list[i]
+        annotation_global[a['gen_id']] = {'global': a['global']}
+    return annotation_global
 
-#annotation
-annotations_list = read_annotation(annotation)
-annotation_global = {}
-#print annotations_list[1]
-for i in range(len(annotations_list)):
-    a = annotations_list[i]
-    annotation_global[a['gen_id']] = {'global': a['global']}
+data_contigs = read_contigs()
+exon_hash = read_exons()
 
 for i in range(0, (len(data_contigs))):
     contig_id = data_contigs[i]['id']
@@ -164,7 +168,7 @@ for i in range(0, (len(data_contigs))):
         intervals.append(interval)
 
 
-
+        annotation_global = read_annotation_global()
         sequences = ""
         if( (len(contig_exons) - 1) == j):
             sequences = get_sequences(current_gen_id, gen_sequences, annotation_global)
@@ -176,12 +180,9 @@ for i in range(0, (len(data_contigs))):
                 s_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
                 intervals = []
 
-    #sequence = data_contigs[i]['seq']
-    #current_annotation = annotation_global[contig_id]['gobal']
-    # {'1_g': {global: {}}, '2g': {global: {} }}
-    #annotation_line_data = "\t"+current_annotation['interval_prot']+"\t"+current_annotation['data1']+"\t"+current_annotation['full']
     annotation_line_data = ""
     line = contig_id+"\tlen="+data_contigs[i]['len']+"\t"+s_intervals+annotation_line_data+"\n"
     print(line)
     data.write(line)
 data.close()
+unclasified.close()
