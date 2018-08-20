@@ -1,0 +1,23 @@
+################################### To do ###################################
+
+----------------------------------------> Understanding files (des)organization
+
+-----------------------------------------------> Making relations between files   * Change annotation_id in original
+
+--------------------------------------> Print relations in order with hash keys
+
+-----------------------------------------------> Creating matrix summarized.txt
+
+> Add < coverage > to summarized.txt
+
+> Cleaning code Part I. (< 100lines)                                              * Run with original
+
+> MongoDB summarized.txt
+
+> Reading subsets
+
+> Cleaning code Part II.
+
+> Creating subsets files
+
+> Cleaning code Part III.
