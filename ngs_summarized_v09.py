@@ -146,6 +146,8 @@ def read_annotation_global():
 data_contigs = read_contigs()
 exon_hash = read_exons()
 
+annotation_global = read_annotation_global()
+
 for i in range(0, (len(data_contigs))):
     contig_id = data_contigs[i]['id']
     # Este es un arreglo
@@ -167,8 +169,6 @@ for i in range(0, (len(data_contigs))):
         interval = ";".join(interval_data)
         intervals.append(interval)
 
-
-        annotation_global = read_annotation_global()
         sequences = ""
         if( (len(contig_exons) - 1) == j):
             sequences = get_sequences(current_gen_id, gen_sequences, annotation_global)
