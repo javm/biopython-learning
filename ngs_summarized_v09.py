@@ -1,4 +1,4 @@
-#!/usr/bin/#!/usr/bin/env python3
+#!/usr/bin/env python3
 
 # -----------------------------------------------------------
 # Marisol
@@ -20,10 +20,10 @@ proteins = open('prot.txt', 'r')
 annotation = open('annotation.txt', 'r')
 # File to write
 data = open('summarized.txt','w')
-unclasified = open('unclasified_txt', 'w')
+unclasified = open('unclasified.txt', 'w')
 
 
-groups = ['Eukaryota', 'Prokaryota', 'Virus']
+groups = ['Eukaryota', 'Prokaryota', 'Virus', 'Archaea']
 # PART 1.1: OPEN BY LINES
 
 contigs_lines = contigs.readlines()
