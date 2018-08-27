@@ -10,7 +10,7 @@ contigs = open('contigs.txt', 'r')
 exons = open('exons.txt', 'r')
 nucleotides = open('nuc.txt', 'r')
 proteins = open('prot.txt', 'r')
-annotation = open('annotation.txt', 'r')
+annotation = open('annotation_out.txt', 'r')
 data = open('summarized.txt','w')
 unclassified = open('unclassified.txt', 'w')
 
@@ -147,6 +147,7 @@ def read_annotation_global():
 
 data_contigs = read_contigs()
 exon_hash = read_exons()
+annotation_global = read_annotation_global()
 
 for i in range(0, (len(data_contigs))):
     contigs_id = data_contigs[i]['id']
@@ -169,8 +170,6 @@ for i in range(0, (len(data_contigs))):
         interval = ";".join(interval_data)
         intervals.append(interval)
 
-
-        annotation_global = read_annotation_global()
         sequences = ""
         if( (len(contig_exons) - 1) == j):
             sequences = get_sequences(current_gen_id, sequences_dic, annotation_global)
