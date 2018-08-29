@@ -9,13 +9,14 @@ import os, sys
 
 #----------------------------- Open and Write files ----------------------------
 
-contigs = open('contigs.txt', 'r')
+contigs = open('contigs_02.txt', 'r')
 exons = open('exons.txt', 'r')
 nucleotides = open('nuc.txt', 'r')
 proteins = open('prot.txt', 'r')
 annotation = open('annotation_out.txt', 'r')
 data = open('summarized.txt','w')
 unclassified = open('unclassified.txt', 'w')
+not_found =  open('not_found.txt', 'w')
 
 contigs_lines = contigs.readlines()
 exons_lines = exons.readlines()
@@ -162,7 +163,10 @@ exon_dic = read_exons()
 global_annotation = read_global_annotation()
 
 for i in range(0, (len(data_contigs))):
-    contigs_id = data_contigs[i]['id']                      #Este es un arreglo
+    contigs_id = data_contigs[i]['id']
+    if (not exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
+        not_found.write(contigs_id)
+        continue
     contig_exons = exon_dic[contigs_id]
     intervals = []
     str_intervals = ""
@@ -189,10 +193,11 @@ for i in range(0, (len(data_contigs))):
                 sequences = get_sequences(current_gen_id, sequences_dic,\
                  global_annotation)
                 str_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
-                intervals = []    
+                intervals = []
     annotation_line_data = ""
     line = contigs_id+"\tlen="+data_contigs[i]['len']+"\t"+str_intervals+\
     annotation_line_data+"\n"
     data.write(line)
+not_found.close()
 data.close()
 unclassified.close()
