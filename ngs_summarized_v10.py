@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
+# This Python file uses the following encoding: utf-8
+
 #------------------------------- Importing modules -----------------------------
 
 import re
 import defings as ngs
+import os, sys
 
 #----------------------------- Open and Write files ----------------------------
 
@@ -102,6 +105,8 @@ def get_sequences(gen_id, sequences_dic, get_annotation):
 
 #----------------------------- Module: Read contigs ----------------------------
 
+#ngs.read_contigs()
+
 def read_contigs():
     data_contigs = []
     for i in range(0, len(contigs_lines), 2):
@@ -111,56 +116,59 @@ def read_contigs():
         data_contigs.append(row)                      #read contigs information
     return data_contigs
 
+#[{'id': 'k101_1', 'len': '366'}
+
 #------------------------------ Module: Read exons -----------------------------
 
+#ngs.read_exons()
+
 def read_exons():
-    exon_hash = {}
+    exon_dic = {}
     for i in range(0, (len(exons_lines))):
         exons_values = exons_lines[i].strip().split()
         contigs_id = exons_values[0]
-        gen_id = exons_values[9][1:-2]                                #relation
-        exon_dic = {
+        gen_id = exons_values[9][1:-2]
+        exon_len = {
             'intervalo_a': exons_values[3],
             'intervalo_b': exons_values[4],
             'direction': exons_values[6],
             'num': exons_values[7],
             'gen_id': gen_id
-        }
-        if (exon_hash.has_key(contigs_id)):
-            # El arreglo no es vacio
-            exon_hash[contigs_id].append(exon_dic)
+        }                                                             #relation
+        if (exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
+            exon_dic[contigs_id].append(exon_len)
         else:
-            exon_hash[contigs_id] = [exon_dic]
-    return exon_hash
+            exon_dic[contigs_id] = [exon_len]
+    return exon_dic
 
-#------------------------------ Module: Read exons -----------------------------
+# 1_g;55-321;+;0
 
-#annotation global
-def read_annotation_global():
+#------------------------- Module: read_global_annotation ----------------------
+
+#ngs.read_global_annotation()
+
+def read_global_annotation():
     annotations_list = read_annotation(annotation_lines)
-    annotation_global = {}
-    #print annotations_list[1]
+    global_annotation = {}
     for i in range(len(annotations_list)):
         a = annotations_list[i]
-        annotation_global[a['gen_id']] = {'global': a['global']}
-    return annotation_global
+        global_annotation[a['gen_id']] = {'global': a['global']}
+    return global_annotation         #Add the rest of the annotation (for sets)
+
+#-------------------------------------------------------------------------------
 
 data_contigs = read_contigs()
-exon_hash = read_exons()
-annotation_global = read_annotation_global()
+exon_dic = read_exons()
+global_annotation = read_global_annotation()
 
 for i in range(0, (len(data_contigs))):
-    contigs_id = data_contigs[i]['id']
-    # Este es un arreglo
-    contig_exons = exon_hash[contigs_id]
-    # Crear un funcion para formato
+    contigs_id = data_contigs[i]['id']                      #Este es un arreglo
+    contig_exons = exon_dic[contigs_id]
     intervals = []
-    s_intervals = ""
-
+    str_intervals = ""
     for j in range(0, (len(contig_exons))):
         current = contig_exons[j]
         current_gen_id = current['gen_id']
-
         interval_data = [ current_gen_id,
             ("-".join( [current['intervalo_a'],
             current['intervalo_b']])),
@@ -169,21 +177,22 @@ for i in range(0, (len(data_contigs))):
         ]
         interval = ";".join(interval_data)
         intervals.append(interval)
-
         sequences = ""
         if( (len(contig_exons) - 1) == j):
-            sequences = get_sequences(current_gen_id, sequences_dic, annotation_global)
-            s_intervals = s_intervals + "\t".join(["|".join(intervals), sequences])
+            sequences = get_sequences(current_gen_id, sequences_dic,\
+            global_annotation)
+            str_intervals = str_intervals + "\t".join(["|".join(intervals),\
+            sequences])
         else:
             next_gen_id = contig_exons[j+1]['gen_id']
             if(not (current_gen_id == next_gen_id)):
-                sequences = get_sequences(current_gen_id, sequences_dic, annotation_global)
-                s_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
-                intervals = []
-
+                sequences = get_sequences(current_gen_id, sequences_dic,\
+                 global_annotation)
+                str_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
+                intervals = []    
     annotation_line_data = ""
-    line = contigs_id+"\tlen="+data_contigs[i]['len']+"\t"+s_intervals+annotation_line_data+"\n"
-    #print(line)
+    line = contigs_id+"\tlen="+data_contigs[i]['len']+"\t"+str_intervals+\
+    annotation_line_data+"\n"
     data.write(line)
 data.close()
 unclassified.close()

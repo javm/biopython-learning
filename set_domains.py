@@ -1,11 +1,11 @@
 import re
 
 summarized_data = open("summarized.txt", 'r')
-eukaryota = open("eukaryota.txt", 'w')
-bacteria = open("bacteria.txt", 'w')
-archaea = open("archaea.txt", 'w')
-virus = open("virus.txt", 'w')
-unclassified = open("unclassified_group.txt", 'w')
+eukaryota = open("eukaryota_set.txt", 'w')
+bacteria = open("bacteria_set.txt", 'w')
+archaea = open("archaea_set.txt", 'w')
+virus = open("virus_set.txt", 'w')
+unclassified = open("unclassified_set.txt", 'w')
 
 for l in summarized_data:
     cols = l.split()
