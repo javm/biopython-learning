@@ -1,5 +1,5 @@
-headers = open ('trinotate_annotation_report.xls', 'r')
-annotation = open ('annotation_out.xls','w')
+headers = open ('annotation_in.txt', 'r')
+annotation = open ('annotation_out.txt','w')
 A1 = []
 
 headers_lines = headers.readlines()
