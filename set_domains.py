@@ -1,6 +1,6 @@
 import re
 
-summarized_data = open("summarized.txt", 'r')
+summarized_data = open("sum_coverage.txt", 'r')
 eukaryota = open("eukaryota_set.txt", 'w')
 bacteria = open("bacteria_set.txt", 'w')
 archaea = open("archaea_set.txt", 'w')
