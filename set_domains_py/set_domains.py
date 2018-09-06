@@ -1,5 +1,10 @@
 import re
 
+<<<<<<< HEAD:set_domains_py/set_domains.py
+=======
+#Comes from coverage
+#summarized_data = open("sum_coverage.txt", 'r')
+>>>>>>> 9ba74096f16012a9925437fe6b03955b7b7d6e17:set_domains.py
 summarized_data = open("summarized.txt", 'r')
 eukaryota = open("eukaryota_set.txt", 'w')
 bacteria = open("bacteria_set.txt", 'w')
@@ -9,10 +14,15 @@ unclassified = open("unclassified_set.txt", 'w')
 
 for l in summarized_data:
     cols = l.split()
-    group_data = re.search('\^(Eukaryota|Bacteria|Archaea|Virus)', \
-        cols[-1]);
+    cols_annotations = re.split('\t(\d+_g;\d+-d+;(\+|\-)\d\|*)+\t',l)
+    print "cols_annotations[0]: "+ cols_annotations[0]
+    print "\n cols_annotations[-1]: "+ cols_annotations[-1]
+    group_data = re.search('\^(Eukaryota|Bacteria|Archaea|Virus)', l);
+
     if(group_data):
         g = group_data.group()
+        print l
+        print "contig: "+cols[0] +"group: "+g
     else:
         g = ''
     if(g == '^Eukaryota'):
