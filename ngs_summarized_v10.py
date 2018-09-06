@@ -92,7 +92,11 @@ archaea = open("archaea_set.txt", 'w')
 virus = open("virus_set.txt", 'w')
 unclassified = open("unclassified_set.txt", 'w')
 
-def write_domains(g, l):
+def write_domains(contigs_id, gen_id, global_annotation):
+    ga = global_annotation[gen_id]['global']
+    l =  "\t".join([contigs_id, gen_id, ga['full'], str(ga['classified'])])
+    g = str(ga['classified'])
+
     if(g == '^Eukaryota'):
         eukaryota.write(l + "\n")
     elif (g == '^Bacteria'):
@@ -209,23 +213,20 @@ for i in range(0, (len(data_contigs))):
 
             str_intervals = str_intervals + "\t".join(["|".join(intervals),\
             sequences])
-
             # Test write_domains
-            get_a = global_annotation[current_gen_id]['global']
-            write_domains(str(get_a['classified']), "\t".join([contigs_id, get_a['full']]))
-
-            str_intervals = ""
+            write_domains(contigs_id, current_gen_id, global_annotation);
+            #str_intervals = ""
 
         else:
             next_gen_id = contig_exons[j+1]['gen_id']
             if(not (current_gen_id == next_gen_id)):
                 sequences = get_sequences(current_gen_id, sequences_dic,\
                  global_annotation)
-                str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
+                str_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
+                #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
 
                 # Test write_domains
-                get_a = global_annotation[current_gen_id]['global']
-                write_domains(str(get_a['classified']), "\t".join([contigs_id, get_a['full']]))
+                write_domains(contigs_id, current_gen_id, global_annotation);
 
                 intervals = []
     annotation_line_data = ""
