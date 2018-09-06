@@ -4,12 +4,12 @@
 #------------------------------- Importing modules -----------------------------
 
 import re
-import defings as ngs
+import fungs as fungs
 import os, sys
 
 #----------------------------- Open and Write files ----------------------------
 
-contigs = open('contigs_02.txt', 'r')
+contigs = open('contigs.txt', 'r')
 exons = open('exons.txt', 'r')
 nucleotides = open('nuc.txt', 'r')
 proteins = open('prot.txt', 'r')
@@ -28,7 +28,7 @@ sequences_dic = {}
 
 #-------------------------- Module: Reading annotation -------------------------
 
-#ngs.read_annotation()
+#fungs.read_annotation()
 
 def read_annotation(annotation_lines):
     data_annotation = []
@@ -62,7 +62,7 @@ def read_annotation(annotation_lines):
 
 #--------------------------- Module: Reading sequences -------------------------
 
-#ngs.read_sequeces()
+#fungs.read_sequeces()
 
 def read_sequences(sequences_out, sequences_name, lines):
     for i in range(0, len(lines), 2):
@@ -83,7 +83,7 @@ read_sequences(sequences_dic, 'prot', proteins_lines)
 
 #----------------------------- Module: Get sequences ---------------------------
 
-#ngs.get_sequences()
+#fungs.get_sequences()
 
 def get_sequences(gen_id, sequences_dic, get_annotation):
     sequences = ""
@@ -106,7 +106,7 @@ def get_sequences(gen_id, sequences_dic, get_annotation):
 
 #----------------------------- Module: Read contigs ----------------------------
 
-#ngs.read_contigs()
+#fungs.read_contigs()
 
 def read_contigs():
     data_contigs = []
@@ -121,7 +121,7 @@ def read_contigs():
 
 #------------------------------ Module: Read exons -----------------------------
 
-#ngs.read_exons()
+#fungs.read_exons()
 
 def read_exons():
     exon_dic = {}
@@ -146,7 +146,7 @@ def read_exons():
 
 #------------------------- Module: read_global_annotation ----------------------
 
-#ngs.read_global_annotation()
+#fungs.read_global_annotation()
 
 def read_global_annotation():
     annotations_list = read_annotation(annotation_lines)
