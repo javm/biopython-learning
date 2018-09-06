@@ -1,7 +1,10 @@
 import re
 
+<<<<<<< HEAD:set_domains_py/set_domains.py
+=======
 #Comes from coverage
 #summarized_data = open("sum_coverage.txt", 'r')
+>>>>>>> 9ba74096f16012a9925437fe6b03955b7b7d6e17:set_domains.py
 summarized_data = open("summarized.txt", 'r')
 eukaryota = open("eukaryota_set.txt", 'w')
 bacteria = open("bacteria_set.txt", 'w')
