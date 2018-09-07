@@ -4,7 +4,7 @@
 #------------------------------- Importing modules -----------------------------
 
 import re
-import fungs as fungs
+#import fungs as fungs
 import os, sys
 
 #----------------------------- Open and Write files ----------------------------
@@ -28,13 +28,10 @@ sequences_dic = {}
 
 #-------------------------- Module: Reading annotation -------------------------
 
-<<<<<<< HEAD:ngs_summarized_py/ngs_summarized_v10.py
 #fungs.read_annotation()
 
-=======
 #ngs.read_annotation()
 # It reads the annotation data and set if we have a group domain
->>>>>>> 9ba74096f16012a9925437fe6b03955b7b7d6e17:ngs_summarized_v10.py
 def read_annotation(annotation_lines):
     data_annotation = []
     for i in range(0, len(annotation_lines)):
