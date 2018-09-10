@@ -4,18 +4,19 @@
 #------------------------------- Importing modules -----------------------------
 
 import re
-#import defings as ngs
+#import fungs as fungs
 import os, sys
 
 #----------------------------- Open and Write files ----------------------------
 
-contigs = open('final.contigs.PE.fa', 'r')
-exons = open('genemark_reduced_cds.gtf', 'r')
-nucleotides = open('nuc_seq.mod.fna', 'r')
-proteins = open('prot_seq.mod.faa', 'r')
-annotation = open('annotation_out.xls', 'r')
+contigs = open('contigs.txt', 'r')
+exons = open('exons.txt', 'r')
+nucleotides = open('nuc.txt', 'r')
+proteins = open('prot.txt', 'r')
+annotation = open('annotation_out.txt', 'r')
 data = open('summarized.txt','w')
 unclassified = open('unclassified.txt', 'w')
+not_found =  open('not_found.txt', 'w')
 
 contigs_lines = contigs.readlines()
 exons_lines = exons.readlines()
@@ -27,8 +28,13 @@ sequences_dic = {}
 
 #-------------------------- Module: Reading annotation -------------------------
 
-#ngs.read_annotation()
+<<<<<<< HEAD
+#fungs.read_annotation()
 
+=======
+>>>>>>> ef1799afd1477dbc433a65dc34440580d7559241
+#ngs.read_annotation()
+# It reads the annotation data and set if we have a group domain
 def read_annotation(annotation_lines):
     data_annotation = []
     for i in range(0, len(annotation_lines)):
@@ -61,7 +67,7 @@ def read_annotation(annotation_lines):
 
 #--------------------------- Module: Reading sequences -------------------------
 
-#ngs.read_sequeces()
+#fungs.read_sequeces()
 
 def read_sequences(sequences_out, sequences_name, lines):
     for i in range(0, len(lines), 2):
@@ -82,8 +88,32 @@ read_sequences(sequences_dic, 'prot', proteins_lines)
 
 #----------------------------- Module: Get sequences ---------------------------
 
-#ngs.get_sequences()
+#fungs.get_sequences()
 
+# Classify group domains
+eukaryota = open("eukaryota_set.txt", 'w')
+bacteria = open("bacteria_set.txt", 'w')
+archaea = open("archaea_set.txt", 'w')
+virus = open("virus_set.txt", 'w')
+unclassified = open("unclassified_set.txt", 'w')
+
+def write_domains(contigs_id, gen_id, global_annotation):
+    ga = global_annotation[gen_id]['global']
+    l =  "\t".join([contigs_id, gen_id, ga['full'], str(ga['classified'])])
+    g = str(ga['classified'])
+
+    if(g == '^Eukaryota'):
+        eukaryota.write(l + "\n")
+    elif (g == '^Bacteria'):
+        bacteria.write(l + "\n")
+    elif (g == '^Archaea'):
+        archaea.write(l + "\n")
+    elif (g == '^Virus'):
+        virus.write(l + "\n")
+    else:
+        unclassified.write(l + "\n")
+
+# Get the sequence by gen_id and set the classified data. (domain group)
 def get_sequences(gen_id, sequences_dic, get_annotation):
     sequences = ""
     if(sequences_dic.has_key(gen_id)):
@@ -105,7 +135,7 @@ def get_sequences(gen_id, sequences_dic, get_annotation):
 
 #----------------------------- Module: Read contigs ----------------------------
 
-#ngs.read_contigs()
+#fungs.read_contigs()
 
 def read_contigs():
     data_contigs = []
@@ -120,7 +150,7 @@ def read_contigs():
 
 #------------------------------ Module: Read exons -----------------------------
 
-#ngs.read_exons()
+#fungs.read_exons()
 
 def read_exons():
     exon_dic = {}
@@ -145,8 +175,9 @@ def read_exons():
 
 #------------------------- Module: read_global_annotation ----------------------
 
-#ngs.read_global_annotation()
+#fungs.read_global_annotation()
 
+# Converts the list to a hash
 def read_global_annotation():
     annotations_list = read_annotation(annotation_lines)
     global_annotation = {}
@@ -162,9 +193,10 @@ exon_dic = read_exons()
 global_annotation = read_global_annotation()
 
 for i in range(0, (len(data_contigs))):
-    contigs_id = data_contigs[i]['id']                      #Este es un arreglo
-    if (not exon_dic.has_key(contigs_id)):
-        continue 
+    contigs_id = data_contigs[i]['id']
+    if (not exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
+        not_found.write(contigs_id)
+        continue
     contig_exons = exon_dic[contigs_id]
     intervals = []
     str_intervals = ""
@@ -183,18 +215,36 @@ for i in range(0, (len(data_contigs))):
         if( (len(contig_exons) - 1) == j):
             sequences = get_sequences(current_gen_id, sequences_dic,\
             global_annotation)
+
             str_intervals = str_intervals + "\t".join(["|".join(intervals),\
             sequences])
+            # Test write_domains
+            write_domains(contigs_id, current_gen_id, global_annotation);
+            #str_intervals = ""
+
         else:
             next_gen_id = contig_exons[j+1]['gen_id']
             if(not (current_gen_id == next_gen_id)):
                 sequences = get_sequences(current_gen_id, sequences_dic,\
                  global_annotation)
                 str_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
-                intervals = []    
+                #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
+
+                # Test write_domains
+                write_domains(contigs_id, current_gen_id, global_annotation);
+
+                intervals = []
     annotation_line_data = ""
     line = contigs_id+"\tlen="+data_contigs[i]['len']+"\t"+str_intervals+\
     annotation_line_data+"\n"
     data.write(line)
+
+not_found.close()
 data.close()
+unclassified.close()
+
+eukaryota.close()
+bacteria.close()
+archaea.close()
+virus.close()
 unclassified.close()
