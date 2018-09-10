@@ -27,12 +27,6 @@ annotation_lines = annotation.readlines()
 sequences_dic = {}
 
 #-------------------------- Module: Reading annotation -------------------------
-
-<<<<<<< HEAD
-#fungs.read_annotation()
-
-=======
->>>>>>> ef1799afd1477dbc433a65dc34440580d7559241
 #ngs.read_annotation()
 # It reads the annotation data and set if we have a group domain
 def read_annotation(annotation_lines):
@@ -112,6 +106,8 @@ def write_domains(contigs_id, gen_id, global_annotation):
         virus.write(l + "\n")
     else:
         unclassified.write(l + "\n")
+        return False
+    return True
 
 # Get the sequence by gen_id and set the classified data. (domain group)
 def get_sequences(gen_id, sequences_dic, get_annotation):
@@ -188,18 +184,30 @@ def read_global_annotation():
 
 #-------------------------------------------------------------------------------
 
+def coverage(len, sum):
+    print len, sum
+    if(sum == 0):
+        return 0
+    else:
+        r = (float(sum)/float(len))*100
+        return round(r,2)
+
+
 data_contigs = read_contigs()
 exon_dic = read_exons()
 global_annotation = read_global_annotation()
 
+# Iterando sobre los contigs
 for i in range(0, (len(data_contigs))):
     contigs_id = data_contigs[i]['id']
     if (not exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
         not_found.write(contigs_id)
         continue
+    # Relación entre contigs y exons
     contig_exons = exon_dic[contigs_id]
     intervals = []
     str_intervals = ""
+    sum_len_4_coverage = 0
     for j in range(0, (len(contig_exons))):
         current = contig_exons[j]
         current_gen_id = current['gen_id']
@@ -212,6 +220,7 @@ for i in range(0, (len(data_contigs))):
         interval = ";".join(interval_data)
         intervals.append(interval)
         sequences = ""
+        count = False
         if( (len(contig_exons) - 1) == j):
             sequences = get_sequences(current_gen_id, sequences_dic,\
             global_annotation)
@@ -219,7 +228,8 @@ for i in range(0, (len(data_contigs))):
             str_intervals = str_intervals + "\t".join(["|".join(intervals),\
             sequences])
             # Test write_domains
-            write_domains(contigs_id, current_gen_id, global_annotation);
+            count = write_domains(contigs_id, current_gen_id, global_annotation);
+
             #str_intervals = ""
 
         else:
@@ -231,11 +241,14 @@ for i in range(0, (len(data_contigs))):
                 #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
 
                 # Test write_domains
-                write_domains(contigs_id, current_gen_id, global_annotation);
+                count = write_domains(contigs_id, current_gen_id, global_annotation);
 
                 intervals = []
+        if(count):
+            sum_len_4_coverage = sum_len_4_coverage + (int(current['intervalo_b']) - int(current['intervalo_a']))
+    cover = coverage(data_contigs[i]['len'], sum_len_4_coverage)
     annotation_line_data = ""
-    line = contigs_id+"\tlen="+data_contigs[i]['len']+"\t"+str_intervals+\
+    line = contigs_id+"\tlen="+data_contigs[i]['len']+"\t"+str(cover)+"%\t"+str_intervals+\
     annotation_line_data+"\n"
     data.write(line)
 
