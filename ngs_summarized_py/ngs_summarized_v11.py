@@ -14,9 +14,9 @@ exons = open('exons.txt', 'r')
 nucleotides = open('nuc.txt', 'r')
 proteins = open('prot.txt', 'r')
 annotation = open('annotation_out.txt', 'r')
-data = open('summarized.txt','w')
-unclassified = open('unclassified.txt', 'w')
-not_found =  open('not_found.txt', 'w')
+data = open('summarized.txt','w')                      # output: summarized.txt
+unclassified = open('unclassified.txt', 'w')         # output: unclassified.txt
+not_found =  open('not_found.txt', 'w')                 # output: not_found.txt
 
 contigs_lines = contigs.readlines()
 exons_lines = exons.readlines()
@@ -91,11 +91,11 @@ read_sequences(sequences_dic, 'prot', proteins_lines)
 #fungs.get_sequences()
 
 # Classify group domains
-eukaryota = open("eukaryota_set.txt", 'w')
-bacteria = open("bacteria_set.txt", 'w')
-archaea = open("archaea_set.txt", 'w')
-virus = open("virus_set.txt", 'w')
-unclassified = open("unclassified_set.txt", 'w')
+eukaryota = open("eukaryota_set.txt", 'w')           #output: eukaryota_set.txt
+bacteria = open("bacteria_set.txt", 'w')              #output: bacteria_set.txt
+archaea = open("archaea_set.txt", 'w')                 #output: archaea_set.txt
+virus = open("virus_set.txt", 'w')                       #output: virus_set.txt
+unclassified = open("unclassified_set.txt", 'w')         # unclassified_set.txt
 
 def write_domains(contigs_id, gen_id, global_annotation):
     ga = global_annotation[gen_id]['global']
