@@ -1,4 +1,12 @@
 import re
+# Covertura (coverage) del contig
+# 1. Para cada contig obtenemos su longitud ('len' en contigs)  (foreach)
+# 1.1 sum[contig_id] = 0
+#    1.2. Para cada de los intervalos (intervalo) de los genes donde se hizo
+#        un matching y dónde existe una annotación identificada a un grupo
+#        Sumamos las longitudes sum[contig_id] = sum[contig_id] + longitud(intervalo)
+#    Calculamos coverage:
+#    coverage[contid_id] = (len / sum[contig_id]) * 100 
 
 summarized = open('summarized.txt','r')
 coverage = open('sum_coverage.txt','w')
@@ -53,5 +61,5 @@ for raw in A1:
     for col in raw:
         coverage.write(col + '\t')
     coverage.write('\n')
-    
+
 coverage.close()
