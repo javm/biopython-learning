@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python2.7
 # This Python file uses the following encoding: utf-8
 
 #------------------------------- Importing modules -----------------------------
@@ -9,11 +9,11 @@ import os, sys
 
 #----------------------------- Open and Write files ----------------------------
 
-contigs = open('final.contigs.PE.fa', 'r')
-exons = open('genemark_reduced_cds.gtf', 'r')
-nucleotides = open('nuc_seq.mod.fna', 'r')
-proteins = open('prot_seq.mod.faa', 'r')
-annotation = open('annotation_out.xls', 'r')
+contigs = open('contigs.txt', 'r')
+exons = open('exons.txt', 'r')
+nucleotides = open('nuc.txt', 'r')
+proteins = open('prot.txt', 'r')
+annotation = open('annotation_out.txt', 'r')
 data = open('summarized.txt','w')
 unclassified = open('unclassified.txt', 'w')
 
@@ -164,7 +164,7 @@ global_annotation = read_global_annotation()
 for i in range(0, (len(data_contigs))):
     contigs_id = data_contigs[i]['id']                      #Este es un arreglo
     if (not exon_dic.has_key(contigs_id)):
-        continue 
+        continue
     contig_exons = exon_dic[contigs_id]
     intervals = []
     str_intervals = ""
@@ -191,7 +191,7 @@ for i in range(0, (len(data_contigs))):
                 sequences = get_sequences(current_gen_id, sequences_dic,\
                  global_annotation)
                 str_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
-                intervals = []    
+                intervals = []
     annotation_line_data = ""
     line = contigs_id+"\tlen="+data_contigs[i]['len']+"\t"+str_intervals+\
     annotation_line_data+"\n"

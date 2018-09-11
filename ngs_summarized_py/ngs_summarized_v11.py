@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python2.7
 # This Python file uses the following encoding: utf-8
 
 #------------------------------- Importing modules -----------------------------
@@ -49,6 +49,7 @@ def read_annotation(annotation_lines):
          'classified': g                                  #key <Classification>
          }
         data_annotation.append(annotation_dic)
+
     for a in data_annotation:
         print "%s\n"%(a)                                               #print_1
     return data_annotation
