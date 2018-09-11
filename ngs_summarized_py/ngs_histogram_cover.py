@@ -59,6 +59,8 @@ def plot_coverage_histogram(set_name):
 
 plot_coverage_histogram('bacteria')
 
+summarize.close()
+set.close()
 #################################################################
 # Option 2.1: from a .txt file with percentage values in the column
 # with position 2 on TLAHUICA.
