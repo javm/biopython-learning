@@ -30,14 +30,34 @@
 import re
 import hisfunc as hfunc
 
-list_percentage = []
-with open("/Users/solouli/Desktop/Git_hub/Ngs_scripts/ngs_histogram_cover_py/example_set.txt", "r") as set:
-    for i in set:
-        if re.search('^k',i):
-             list_percentage.append(round(float(i.split()[2].split('%')[0])))
-             #print(list_percentage)
+# list_percentage = []
+# with open("/Users/solouli/Desktop/Git_hub/Ngs_scripts/ngs_histogram_cover_py/example_set.txt", "r") as set:
+#     for i in set:
+#         if re.search('^k',i):
+#              list_percentage.append(round(float(i.split()[2].split('%')[0])))
+#              #print(list_percentage)
+#
+# hfunc.plot_histogram(list_percentage, 10, "Histograma de cobertura sobre anotaciones", "histogram_cover.png")
 
-hfunc.plot_histogram(list_percentage, 10, "Histograma de cobertura sobre anotaciones", "histogram_cover.png")
+def plot_coverage_histogram(set_name):
+    coverage = {}
+    summarized = open('./summarized.txt')
+    summ_lines = summarized.readlines()
+    for l in summ_lines:
+        el = l.split()
+        contig_id = el[0]
+        percentage = round(float(el[2][:-1]))
+        coverage[contig_id] = percentage
+    print coverage
+
+    list_percentage = []
+    with open('./' + set_name + '_set.txt', 'r') as set:
+        for i in set:
+            contig_id = i.split()[0]
+            list_percentage.append(coverage[contig_id])
+    hfunc.plot_histogram(list_percentage, 10, "Histograma de cobertura sobre anotaciones", "histogram_cover.png")
+
+plot_coverage_histogram('bacteria')
 
 #################################################################
 # Option 2.1: from a .txt file with percentage values in the column
