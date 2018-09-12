@@ -139,7 +139,14 @@ def read_contigs():
     for i in range(0, len(contigs_lines), 2):
         contig = contigs_lines[i].lstrip('>')
         contig = contig.strip().split()
-        row = {'id': contig[0], 'len': contig[3].split('=')[1]}
+        seq = contigs_lines[i+1].strip()
+        row = {
+            'id': contig[0],
+            'flag': contig[1],
+            'multi': contig[2],
+            'len': contig[3].split('=')[1],
+            'seq': seq
+            }
         data_contigs.append(row)                      #read contigs information
     return data_contigs
 
@@ -202,8 +209,15 @@ global_annotation = read_global_annotation()
 for i in range(0, (len(data_contigs))):
     contigs_id = data_contigs[i]['id']
     contig_len = data_contigs[i]['len']
+    contig_multi = data_contigs[i]['multi']
+    contig_flag = data_contigs[i]['flag']
     if (not exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
-        not_found.write(contigs_id)
+        not_found.write("\t".join[
+            ">"+contigs_id,
+            "flag="+contig_flag,
+            "multi="+contig_multi,
+            "len="+contig_len,
+             seq]+'\n')
         continue
     # Relación entre contigs y exons
     contig_exons = exon_dic[contigs_id]
@@ -239,7 +253,7 @@ for i in range(0, (len(data_contigs))):
             if(not (current_gen_id == next_gen_id)):
                 sequences = get_sequences(current_gen_id, sequences_dic,\
                  global_annotation)
-                str_intervals = "\t".join(["|".join(intervals), sequences])+'\t' 
+                str_intervals = "\t".join(["|".join(intervals), sequences])+'\t'
                 #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
 
                 # Test write_domains
