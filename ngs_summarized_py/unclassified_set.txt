@@ -1,8 +1,4 @@
-1_g	comp1_c0_seq1	.	.	.	cds.comp1_c0_seq1|m.1	1-106[+]	.	.	.	.	.	.	.	.	.	.
-10_g	comp10_c0_seq1	.	.	.	cds.comp10_c0_seq1|m.10	1-134[+]	.	.	.	.	.	.	.	.	.	.
-11_g	comp11_c0_seq1	.	.	.	cds.comp11_c0_seq1|m.11	1-120[+]	.	.	.	.	.	.	.	.	.	.
-13_g	comp13_c0_seq1	.	.	.	cds.comp13_c0_seq1|m.13	1-752[+]	BETT2_ACIAD^BETT2_ACIAD^Q:212-752,H:12-527^32%ID^E:1e-77^.^.	.	.	.	.	.	.	.	.	.
-k101_1	1_g		.	.	.	.	.	.	.	.	.	.	False
-k101_7	10_g		.	.	.	.	.	.	.	.	.	.	False
-k101_8	11_g		.	.	.	.	.	.	.	.	.	.	False
-k101_10	13_g		BETT2_ACIAD^BETT2_ACIAD^Q:212-752,H:12-527^32%ID^E:1e-77^.^.	.	.	.	.	.	.	.	.	.	False
+k101_1	len=366	1_g;55-321;+;0	ATTTGTCAGAAATTTCTAATAATATACAATGAAAACCAAATCAATTTAACA	PKLLRPEVHVRPPPLLHGLGRVGQGTDQLKDVVRLLRDLSHAEQIFTNQDV	1-106[+]	.		.	.	.	.	.	.	.	.	.	.	False		.	.	.	.	.	.	.	.	.	.	False
+k101_7	len=488	10_g;160-185;-;1	CCTTCTCTTGAAGACTTTTTCCCCCATGTCTCATGATCAACTCTCCCCCCC	FVGENNVFRGKVLEVKDNHALIRTNRSGDLLARISSANQGKMKAGEDAMMF	1-134[+]	.		.	.	.	.	.	.	.	.	.	.	False		.	.	.	.	.	.	.	.	.	.	False
+k101_8	len=593	11_g;135-513;+;0	AGACTCCTCTGCACAATTCTCGCAGAAACTGTCAAGCTCACAGTATTCTCC	KEQMAKAAKMPFIFKHVAAMPDVHVGIGATVGSVIPTKGAVIPAAVGVDIG	1-120[+]	.		.	.	.	.	.	.	.	.	.	.	False		.	.	.	.	.	.	.	.	.	.	False
+k101_10	len=594	13_g;20-395;+;2|13_g;463-510;+;1|13_g;515-594;+;0	CCTTCTCTTGAAGACTTTTTCCCCCATGTCTCATGATCAACTCTCCCCCCC	FVGENNVFRGKVLEVKDNHALIRTNRSGDLLARISSANQGKMKAGEDAMMF	1-752[+]	BETT2_ACIAD^BETT2_ACIAD^Q:212-752,H:12-527^32%ID^E:1e-77^.^.		BETT2_ACIAD^BETT2_ACIAD^Q:212-752,H:12-527^32%ID^E:1e-77^.^.	.	.	.	.	.	.	.	.	.	False		BETT2_ACIAD^BETT2_ACIAD^Q:212-752,H:12-527^32%ID^E:1e-77^.^.	.	.	.	.	.	.	.	.	.	False
