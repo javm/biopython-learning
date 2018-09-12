@@ -11,6 +11,17 @@
 # ---------------------------------------------------------------
 
 #################################################################
+#                             Option 3                          #
+#################################################################
+
+import hisfunc as hfunc
+
+hfunc.plot_histogram(hfunc.plot_coverage_histogram('eukaryota'), 10, "Histograma de cobertura sobre anotaciones con ID", "histogram_cover_euk.png")
+hfunc.plot_histogram(hfunc.plot_coverage_histogram('bacteria'), 10, "Histograma de cobertura sobre anotaciones con ID", "histogram_cover_bac.png")
+hfunc.plot_histogram(hfunc.plot_coverage_histogram('archaea'), 10, "Histograma de cobertura sobre anotaciones con ID", "histogram_cover_arc.png")
+hfunc.plot_histogram(hfunc.plot_coverage_histogram('virus'), 10, "Histograma de cobertura sobre anotaciones con ID", "histogram_cover_vir.png")
+
+#################################################################
 # Option 1: from a .json list with the values only
 #################################################################
 
@@ -27,8 +38,8 @@
 # with position 2
 #################################################################
 
-import re
-import hisfunc as hfunc
+#import re
+#import hisfunc as hfunc
 
 # list_percentage = []
 # with open("/Users/solouli/Desktop/Git_hub/Ngs_scripts/ngs_histogram_cover_py/example_set.txt", "r") as set:
@@ -39,28 +50,6 @@ import hisfunc as hfunc
 #
 # hfunc.plot_histogram(list_percentage, 10, "Histograma de cobertura sobre anotaciones", "histogram_cover.png")
 
-def plot_coverage_histogram(set_name):
-    coverage = {}
-    summarized = open('./summarized.txt')
-    summ_lines = summarized.readlines()
-    for l in summ_lines:
-        el = l.split()
-        contig_id = el[0]
-        percentage = round(float(el[2][:-1]))
-        coverage[contig_id] = percentage
-    print coverage
-
-    list_percentage = []
-    with open('./' + set_name + '_set.txt', 'r') as set:
-        for i in set:
-            contig_id = i.split()[0]
-            list_percentage.append(coverage[contig_id])
-    hfunc.plot_histogram(list_percentage, 10, "Histograma de cobertura sobre anotaciones", "histogram_cover.png")
-
-plot_coverage_histogram('bacteria')
-
-summarize.close()
-set.close()
 #################################################################
 # Option 2.1: from a .txt file with percentage values in the column
 # with position 2 on TLAHUICA.
@@ -105,3 +94,42 @@ set.close()
 #        if re.search('^k',i):
 #             list_percentage_vir.append(round(float(i.split()[2].split('%')[0])))
 #hfunc.plot_histogram(list_percentage_vir, 10, "Histograma de cobertura sobre anotaciones en: VIRUS", "histogram_cover_vir.png")
+
+#################################################################
+# Option 3: from a .txt file with percentage values in the column
+# with position 2 for the global matrix <summarized>, to each set
+# of taxonomic groups on TLAHUICA.
+#################################################################
+
+#import hisfunc as hfunc
+
+#def plot_coverage_histogram(set_name):
+#    coverage = {}
+#    summarized = open('./summarized.txt')
+#    summ_lines = summarized.readlines()
+#    for l in summ_lines:
+#        el = l.split()
+#        contig_id = el[0]
+#        percentage = round(float(el[2][:-1]))
+#        coverage[contig_id] = percentage
+#    print coverage
+
+#    list_percentage = []
+#    with open('./' + set_name + '_set.txt', 'r') as set:
+#        for i in set:
+#            contig_id = i.split()[0]
+#            list_percentage.append(coverage[contig_id])
+    #hfunc.plot_histogram(list_percentage, 10, "Histograma de cobertura sobre anotaciones con ID", "histogram_cover.png")
+
+#plot_coverage_histogram('bacteria')
+
+#################################################################
+# Option 3.1: from a .txt file with percentage values in the column
+# with position 2 for the global matrix <summarized>, to whole sets
+# of taxonomic groups on TLAHUICA.
+#################################################################
+
+#import hisfunc as hfunc
+
+#hfunc.plot_histogram(hfunc.plot_coverage_histogram('bacteria'), 10, "Histograma de cobertura sobre anotaciones con ID", "histogram_cover_bac.png")
+#hfunc.plot_histogram(hfunc.plot_coverage_histogram('eukaryota'), 10, "Histograma de cobertura sobre anotaciones con ID", "histogram_cover_euk.png")
