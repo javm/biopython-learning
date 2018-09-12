@@ -15,7 +15,7 @@ nucleotides = open('nuc.txt', 'r')
 proteins = open('prot.txt', 'r')
 annotation = open('annotation_out.txt', 'r')
 data = open('summarized.txt','w')                      # output: summarized.txt
-unclassified = open('unclassified.txt', 'w')         # output: unclassified.txt
+#unclassified = open('unclassified.txt', 'w')         # output: unclassified.txt
 not_found =  open('not_found.txt', 'w')                 # output: not_found.txt
 
 contigs_lines = contigs.readlines()
@@ -41,7 +41,7 @@ def read_annotation(annotation_lines):
             g = group_data.group()                                  #classified
         else:
             g = False                                             #unclassified
-            unclassified.write(annotation_lines[i])
+            #unclassified.write(annotation_lines[i])
         annotation_dic['gen_id'] = data[0]                        #key <gen_id>
         annotation_dic['global'] = {'interval_prot': data[6],     #key <global>
          'recname': data[7],                                     #key <RecName>
@@ -92,9 +92,9 @@ archaea = open("archaea_set.txt", 'w')                 #output: archaea_set.txt
 virus = open("virus_set.txt", 'w')                       #output: virus_set.txt
 unclassified = open("unclassified_set.txt", 'w')         # unclassified_set.txt
 
-def write_domains(contigs_id, gen_id, global_annotation):
-    ga = global_annotation[gen_id]['global']
-    l =  "\t".join([contigs_id, gen_id, ga['full'], str(ga['classified'])])
+def write_domains(contigs_id, len, str_intervals, ga):
+    #ga = global_annotation[gen_id]['global']
+    l =  "\t".join([contigs_id, 'len='+len, str_intervals, ga['full'], str(ga['classified'])])
     g = str(ga['classified'])
 
     if(g == '^Eukaryota'):
@@ -198,9 +198,10 @@ data_contigs = read_contigs()
 exon_dic = read_exons()
 global_annotation = read_global_annotation()
 
-# Iterando sobre los contigs
+# Iterando sobre los contigs (write_summarized)
 for i in range(0, (len(data_contigs))):
     contigs_id = data_contigs[i]['id']
+    contig_len = data_contigs[i]['len']
     if (not exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
         not_found.write(contigs_id)
         continue
@@ -226,10 +227,10 @@ for i in range(0, (len(data_contigs))):
             sequences = get_sequences(current_gen_id, sequences_dic,\
             global_annotation)
 
-            str_intervals = str_intervals + "\t".join(["|".join(intervals),\
-            sequences])
+            str_rest = "\t".join(["|".join(intervals), sequences])
+            str_intervals = str_intervals + str_rest
             # Test write_domains
-            count = write_domains(contigs_id, current_gen_id, global_annotation);
+            count = write_domains(contigs_id, contig_len, str_rest, global_annotation[current_gen_id]['global']);
 
             #str_intervals = ""
 
@@ -238,18 +239,19 @@ for i in range(0, (len(data_contigs))):
             if(not (current_gen_id == next_gen_id)):
                 sequences = get_sequences(current_gen_id, sequences_dic,\
                  global_annotation)
-                str_intervals = "\t".join(["|".join(intervals), sequences]) + "\t"
+                str_intervals = "\t".join(["|".join(intervals), sequences])+'\t' 
                 #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
 
                 # Test write_domains
-                count = write_domains(contigs_id, current_gen_id, global_annotation);
+                count = write_domains(contigs_id, contig_len, str_intervals, global_annotation[current_gen_id]['global']);
 
                 intervals = []
+        # coverage calculation
         if(count):
             sum_len_4_coverage = sum_len_4_coverage + (int(current['intervalo_b']) - int(current['intervalo_a']))
-    cover = coverage(data_contigs[i]['len'], sum_len_4_coverage)
+    cover = coverage(contig_len, sum_len_4_coverage)
     annotation_line_data = ""
-    line = contigs_id+"\tlen="+data_contigs[i]['len']+"\t"+str(cover)+"%\t"+str_intervals+\
+    line = contigs_id+"\tlen="+contig_len+"\t"+str(cover)+"%\t"+str_intervals+\
     annotation_line_data+"\n"
     data.write(line)
 
