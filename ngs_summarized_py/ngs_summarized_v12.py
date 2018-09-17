@@ -213,10 +213,10 @@ for i in range(0, (len(data_contigs))):
     contig_flag = data_contigs[i]['flag']
     contig_seq = data_contigs[i]['seq']
     if (not exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
-        not_found.write("\t".join([
+        not_found.write(" ".join([
             ">"+contigs_id,
-            "flag="+contig_flag,
-            "multi="+contig_multi,
+            contig_flag,
+            contig_multi,
             "len="+contig_len,'\n']))
         not_found.write(contig_seq)
         continue
