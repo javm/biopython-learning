@@ -87,26 +87,40 @@ read_sequences(sequences_dic, 'prot', proteins_lines)
 
 # Classify group domains
 eukaryota = open("eukaryota_set.txt", 'w')           #output: eukaryota_set.txt
+eukaryota_fa = open("eukaryota_set.fa", 'w')           #output: eukaryota_set.txt
 bacteria = open("bacteria_set.txt", 'w')              #output: bacteria_set.txt
-archaea = open("archaea_set.txt", 'w')                 #output: archaea_set.txt
+bacteria_fa = open("bacteria_set.fa", 'w')
+archaea = open("archaea_set.txt", 'w')
+archaea_fa = open("archaea_set.fa", 'w')                 #output: archaea_set.txt
 virus = open("virus_set.txt", 'w')                       #output: virus_set.txt
+virus_fa = open("virus_set.fa", 'w')
 unclassified = open("unclassified_set.txt", 'w')         # unclassified_set.txt
+unclassified_fa = open("unclassified_set.fa", 'w')
 
-def write_domains(contigs_id, len, str_intervals, ga):
+
+def write_domains(str_intervals, ga, data):
     #ga = global_annotation[gen_id]['global']
+    contig_id = data['id']
+    len = data['len']
+
     l =  "\t".join([contigs_id, 'len='+len, str_intervals, ga['full'], str(ga['classified'])])
     g = str(ga['classified'])
 
     if(g == '^Eukaryota'):
         eukaryota.write(l + "\n")
+        write_FASTA(eukaryota_fa, data)
     elif (g == '^Bacteria'):
         bacteria.write(l + "\n")
+        write_FASTA(bacteria_fa, data)
     elif (g == '^Archaea'):
         archaea.write(l + "\n")
+        write_FASTA(archaea_fa, data)
     elif (g == '^Virus'):
         virus.write(l + "\n")
+        write_FASTA(virus_fa, data)
     else:
         unclassified.write(l + "\n")
+        write_FASTA(unclassified_fa, data)
         return False
     return True
 
@@ -205,20 +219,35 @@ data_contigs = read_contigs()
 exon_dic = read_exons()
 global_annotation = read_global_annotation()
 
+#Write FASTA
+def write_FASTA(f, data):
+    contigs_id = data['id']
+    contig_len = data['len']
+    contig_multi = data['multi']
+    contig_flag = data['flag']
+    contig_seq = data['seq']
+    f.write(" ".join([
+        ">"+contigs_id,
+        contig_flag,
+        contig_multi,
+        "len="+contig_len,'\n']))
+    f.write(contig_seq)
+
 # Iterando sobre los contigs (write_summarized)
 for i in range(0, (len(data_contigs))):
     contigs_id = data_contigs[i]['id']
     contig_len = data_contigs[i]['len']
-    contig_multi = data_contigs[i]['multi']
-    contig_flag = data_contigs[i]['flag']
-    contig_seq = data_contigs[i]['seq']
+    #contig_multi = data_contigs[i]['multi']
+    #contig_flag = data_contigs[i]['flag']
+    #contig_seq = data_contigs[i]['seq']
     if (not exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
-        not_found.write(" ".join([
-            ">"+contigs_id,
-            contig_flag,
-            contig_multi,
-            "len="+contig_len,'\n']))
-        not_found.write(contig_seq)
+        write_FASTA(not_found, data_contigs[i])
+        # not_found.write(" ".join([
+        #     ">"+contigs_id,
+        #     contig_flag,
+        #     contig_multi,
+        #     "len="+contig_len,'\n']))
+        # not_found.write(contig_seq)
         continue
     # Relación entre contigs y exons
     contig_exons = exon_dic[contigs_id]
@@ -245,7 +274,11 @@ for i in range(0, (len(data_contigs))):
             str_rest = "\t".join(["|".join(intervals), sequences])
             str_intervals = str_intervals + str_rest
             # Test write_domains
-            count = write_domains(contigs_id, contig_len, str_rest, global_annotation[current_gen_id]['global']);
+            count = write_domains(
+                str_rest,
+                global_annotation[current_gen_id]['global'],
+                data_contigs[i]
+            );
 
             #str_intervals = ""
 
@@ -258,7 +291,11 @@ for i in range(0, (len(data_contigs))):
                 #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
 
                 # Test write_domains
-                count = write_domains(contigs_id, contig_len, str_intervals, global_annotation[current_gen_id]['global']);
+                count = write_domains(
+                    str_intervals,
+                    global_annotation[current_gen_id]['global'],
+                    data_contigs[i]
+                );
 
                 intervals = []
         # coverage calculation
@@ -275,7 +312,12 @@ data.close()
 unclassified.close()
 
 eukaryota.close()
+eukaryota_fa.close()
 bacteria.close()
+bacteria_fa.close()
 archaea.close()
+archaea_fa.close()
 virus.close()
+virus_fa.close()
 unclassified.close()
+unclassified_fa.close()
