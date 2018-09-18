@@ -6,6 +6,7 @@
 import re
 #import fungs as fungs
 import os, sys
+import read_functions as rf
 
 #----------------------------- Open and Write files ----------------------------
 
@@ -26,58 +27,16 @@ annotation_lines = annotation.readlines()
 
 sequences_dic = {}
 
-#-------------------------- Module: Reading annotation -------------------------
-#ngs.read_annotation()
-# It reads the annotation data and set if we have a group domain
-def read_annotation(annotation_lines):
-    data_annotation = []
-    for i in range(0, len(annotation_lines)):
-        annotation_dic = {}
-        data_full = re.split('\d+\-\d+\[(\+|\-)\]', annotation_lines[i].strip())
-        data = annotation_lines[i].strip().split()
-        group_data = re.search('\^(Eukaryota|Bacteria|Archaea|Virus)',\
-        data_full[-1])
-        if group_data:
-            g = group_data.group()                                  #classified
-        else:
-            g = False                                             #unclassified
-            #unclassified.write(annotation_lines[i])
-        annotation_dic['gen_id'] = data[0]                        #key <gen_id>
-        annotation_dic['global'] = {'interval_prot': data[6],     #key <global>
-         'recname': data[7],                                     #key <RecName>
-         'full': data_full[-1],                                     #key <Full>
-         'classified': g                                  #key <Classification>
-         }
-        data_annotation.append(annotation_dic)
-
-    for a in data_annotation:
-        print "%s\n"%(a)                                               #print_1
-    return data_annotation
-
 #{'gen_id': '13_g', 'global': {'interval_prot': '1-151[+]',
 # 'recname': 'CQSS_VIBCB^CQSS_VIBCB^Q:4-151,H:3-150^60.81%ID^E:1e-57^RecName:',
 # 'classified': '^Bacteria',
 # 'full': '\tCQSS_VIBCB^CQSS_VIBCB^Q:4-151,H:3-150^60.81%ID^E:1e-57^RecName:
 #  Full=CAI-1 autoinducer sensor kinase/phosphatase CqsS;^Bacteria; Proteoba.'}}
 
-#--------------------------- Module: Reading sequences -------------------------
-
-#fungs.read_sequeces()
-
-def read_sequences(sequences_out, sequences_name, lines):
-    for i in range(0, len(lines), 2):
-        gen_id = lines[i].lstrip('>')
-        gen_id = gen_id.strip()
-        if(not sequences_dic.has_key(gen_id)):
-            sequences_out[gen_id] = {}
-        sequences_out[gen_id][sequences_name] = ''
-        sequence = lines[i+1].strip()
-        sequences_out[gen_id][sequences_name] = sequence
-
 #-------------------------------------------------------------------------------
 
-read_sequences(sequences_dic, 'nuc', nucleotides_lines)
-read_sequences(sequences_dic, 'prot', proteins_lines)
+sequences_dic = rf.read_sequences(sequences_dic, 'nuc', nucleotides_lines)
+sequences_dic = rf.read_sequences(sequences_dic, 'prot', proteins_lines)
 
 #{'1_g: {'nuc': 'AGTC...', 'prot': 'AKLVWY...'}}
 
@@ -96,7 +55,6 @@ virus = open("virus_set.txt", 'w')                       #output: virus_set.txt
 virus_fa = open("virus_set.fa", 'w')
 unclassified = open("unclassified_set.txt", 'w')         # unclassified_set.txt
 unclassified_fa = open("unclassified_set.fa", 'w')
-
 
 def write_domains(str_intervals, ga, data):
     #ga = global_annotation[gen_id]['global']
@@ -142,68 +100,6 @@ def get_sequences(gen_id, sequences_dic, get_annotation):
             ])
     return sequences
 
-# OUTPUT: NUCLEOTIDES_ATCG AA_YWVAVL ANNOTATION_XXX
-
-#----------------------------- Module: Read contigs ----------------------------
-
-#fungs.read_contigs()
-
-def read_contigs():
-    data_contigs = []
-    for i in range(0, len(contigs_lines), 2):
-        contig = contigs_lines[i].lstrip('>')
-        contig = contig.strip().split()
-        seq = contigs_lines[i+1].lstrip('\t')
-        row = {
-            'id': contig[0],
-            'flag': contig[1],
-            'multi': contig[2],
-            'len': contig[3].split('=')[1],
-            'seq': seq
-            }
-        data_contigs.append(row)                      #read contigs information
-    return data_contigs
-
-#[{'id': 'k101_1', 'len': '366'}
-
-#------------------------------ Module: Read exons -----------------------------
-
-#fungs.read_exons()
-
-def read_exons():
-    exon_dic = {}
-    for i in range(0, (len(exons_lines))):
-        exons_values = exons_lines[i].strip().split()
-        contigs_id = exons_values[0]
-        gen_id = exons_values[9][1:-2]
-        exon_len = {
-            'intervalo_a': exons_values[3],
-            'intervalo_b': exons_values[4],
-            'direction': exons_values[6],
-            'num': exons_values[7],
-            'gen_id': gen_id
-        }                                                             #relation
-        if (exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
-            exon_dic[contigs_id].append(exon_len)
-        else:
-            exon_dic[contigs_id] = [exon_len]
-    return exon_dic
-
-# 1_g;55-321;+;0
-
-#------------------------- Module: read_global_annotation ----------------------
-
-#fungs.read_global_annotation()
-
-# Converts the list to a hash
-def read_global_annotation():
-    annotations_list = read_annotation(annotation_lines)
-    global_annotation = {}
-    for i in range(len(annotations_list)):
-        a = annotations_list[i]
-        global_annotation[a['gen_id']] = {'global': a['global']}
-    return global_annotation         #Add the rest of the annotation (for sets)
-
 #-------------------------------------------------------------------------------
 
 def coverage(len, sum):
@@ -215,9 +111,9 @@ def coverage(len, sum):
         return round(r,2)
 
 
-data_contigs = read_contigs()
-exon_dic = read_exons()
-global_annotation = read_global_annotation()
+data_contigs = rf.read_contigs(contigs_lines)
+exon_dic = rf.read_exons(exons_lines)
+global_annotation = rf.read_global_annotation(annotation_lines)
 
 #Write FASTA
 def write_FASTA(f, data):
@@ -237,17 +133,9 @@ def write_FASTA(f, data):
 for i in range(0, (len(data_contigs))):
     contigs_id = data_contigs[i]['id']
     contig_len = data_contigs[i]['len']
-    #contig_multi = data_contigs[i]['multi']
-    #contig_flag = data_contigs[i]['flag']
-    #contig_seq = data_contigs[i]['seq']
+
     if (not exon_dic.has_key(contigs_id)):              #El arreglo no es vacío
         write_FASTA(not_found, data_contigs[i])
-        # not_found.write(" ".join([
-        #     ">"+contigs_id,
-        #     contig_flag,
-        #     contig_multi,
-        #     "len="+contig_len,'\n']))
-        # not_found.write(contig_seq)
         continue
     # Relación entre contigs y exons
     contig_exons = exon_dic[contigs_id]
@@ -280,15 +168,12 @@ for i in range(0, (len(data_contigs))):
                 data_contigs[i]
             );
 
-            #str_intervals = ""
-
         else:
             next_gen_id = contig_exons[j+1]['gen_id']
             if(not (current_gen_id == next_gen_id)):
                 sequences = get_sequences(current_gen_id, sequences_dic,\
                  global_annotation)
                 str_intervals = "\t".join(["|".join(intervals), sequences])+'\t'
-                #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
 
                 # Test write_domains
                 count = write_domains(
