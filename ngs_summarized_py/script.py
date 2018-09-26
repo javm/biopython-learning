@@ -1,5 +1,10 @@
+
+# coding: utf-8
+
+# In[1]:
+
 #!/usr/bin/python2.7
-# This Python file uses the following encoding: utf-8
+
 
 #------------------------------- Importing modules -----------------------------
 
@@ -25,6 +30,22 @@ proteins_lines = proteins.readlines()
 annotation_lines = annotation.readlines()
 
 sequences_dic = {}
+
+
+# In[2]:
+
+#for i in range(0, (len(exons_lines))):
+#    exons_values = exons_lines[i].strip().split()
+#    exon_len = {
+#            'intervalo_a': exons_values[3],
+#            'intervalo_b': exons_values[4],
+#            'direction': exons_values[6],
+#            'num': exons_values[7],
+#            'gen_id': gen_id
+#        }
+
+
+# In[3]:
 
 #-------------------------- Module: Reading annotation -------------------------
 
@@ -52,11 +73,16 @@ def read_annotation(annotation_lines):
 #        print "%s\n"%(a)                                               #print_1
     return data_annotation
 
+
+
 # {'gen_id': '13_g', 'global': {'interval_prot': '1-151[+]',
 # 'recname': 'CQSS_VIBCB^CQSS_VIBCB^Q:4-151,H:3-150^60.81%ID^E:1e-57^RecName:',
 # 'classified': '^Bacteria',
 # 'full': '\tCQSS_VIBCB^CQSS_VIBCB^Q:4-151,H:3-150^60.81%ID^E:1e-57^RecName:
 #  Full=CAI-1 autoinducer sensor kinase/phosphatase CqsS;^Bacteria; Proteoba.'}}
+
+
+# In[4]:
 
 #--------------------------- Module: Reading sequences -------------------------
 
@@ -79,47 +105,8 @@ read_sequences(sequences_dic, 'prot', proteins_lines)
 
 #{'1_g: {'nuc': 'AGTC...', 'prot': 'AKLVWY...'}}
 
-#----------------------------- Module: Get sequences ---------------------------
 
-# Classify group domains
-
-eukaryota = open("eukaryota_set.txt", 'w')           #output: eukaryota_set.txt
-eukaryota_fa = open("eukaryota_set.fa", 'w')           #output: eukaryota_set.txt
-bacteria = open("bacteria_set.txt", 'w')              #output: bacteria_set.txt
-bacteria_fa = open("bacteria_set.fa", 'w')
-archaea = open("archaea_set.txt", 'w')
-archaea_fa = open("archaea_set.fa", 'w')                 #output: archaea_set.txt
-virus = open("virus_set.txt", 'w')                       #output: virus_set.txt
-virus_fa = open("virus_set.fa", 'w')
-unclassified = open("unclassified_set.txt", 'w')         # unclassified_set.txt
-unclassified_fa = open("unclassified_set.fa", 'w')
-
-
-def write_domains(str_intervals, ga, data):
-    #ga = global_annotation[gen_id]['global']
-    contig_id = data['id']
-    len = data['len']
-
-    l =  "\t".join([contigs_id, 'len='+len, str_intervals, ga['full'], str(ga['classified'])])
-    g = str(ga['classified'])
-
-    if(g == '^Eukaryota'):
-        eukaryota.write(l + "\n")
-        write_FASTA(eukaryota_fa, data)
-    elif (g == '^Bacteria'):
-        bacteria.write(l + "\n")
-        write_FASTA(bacteria_fa, data)
-    elif (g == '^Archaea'):
-        archaea.write(l + "\n")
-        write_FASTA(archaea_fa, data)
-    elif (g == '^Virus'):
-        virus.write(l + "\n")
-        write_FASTA(virus_fa, data)
-    else:
-        unclassified.write(l + "\n")
-        write_FASTA(unclassified_fa, data)
-        return False
-    return True
+# In[5]:
 
 # Get the sequence by gen_id and set the classified data. (domain group)
 def get_sequences(gen_id, sequences_dic, get_annotation):
@@ -133,7 +120,7 @@ def get_sequences(gen_id, sequences_dic, get_annotation):
         get_a = get_annotation[gen_id]['global']
         sequences = "\t".join([sequences,
             get_a['interval_prot'],
-            get_a['recname'],
+            #get_a['recname'], este no va porque full ya lo tiene
             get_a['full'],
             str(get_a['classified'])                         #annotation_output
             ])
@@ -226,8 +213,112 @@ def write_FASTA(f, data):
         "len="+contig_len,'\n']))
     f.write(contig_seq)
 
+
+# In[6]:
+
+#----------------------------- Module: Get sequences ---------------------------
+
+# Classify group domains
+
+eukaryota = open("eukaryota_set.txt", 'w')           #output: eukaryota_set.txt
+eukaryota_fa = open("eukaryota_set.fa", 'w')           #output: eukaryota_set.txt
+bacteria = open("bacteria_set.txt", 'w')              #output: bacteria_set.txt
+bacteria_fa = open("bacteria_set.fa", 'w')
+archaea = open("archaea_set.txt", 'w')
+archaea_fa = open("archaea_set.fa", 'w')                 #output: archaea_set.txt
+virus = open("virus_set.txt", 'w')                       #output: virus_set.txt
+virus_fa = open("virus_set.fa", 'w')
+unclassified = open("unclassified_set.txt", 'w')         # unclassified_set.txt
+unclassified_fa = open("unclassified_set.fa", 'w')
+
+
+def write_domains(str_intervals, ga, data):
+    #ga = global_annotation[gen_id]['global']
+    contig_id = data['id']
+    len = data['len']
+
+    #l =  "\t".join([contigs_id, 'len='+len, str_intervals, ga['full'], str(ga['classified'])])
+    l =  "\t".join([contigs_id, 'len='+len, str_intervals])
+    g = str(ga['classified'])
+
+    if(g == '^Eukaryota'):
+        eukaryota.write(l + "\n")
+        write_FASTA(eukaryota_fa, data)
+    elif (g == '^Bacteria'):
+        bacteria.write(l + "\n")
+        write_FASTA(bacteria_fa, data)
+    elif (g == '^Archaea'):
+        archaea.write(l + "\n")
+        write_FASTA(archaea_fa, data)
+    elif (g == '^Virus'):
+        virus.write(l + "\n")
+        write_FASTA(virus_fa, data)
+    else:
+        unclassified.write(l + "\n")
+        write_FASTA(unclassified_fa, data)
+        return False
+    return True
+
+
+# In[7]:
+
+def maxper(num):
+    datos = annotation_lines[num].strip().split()
+    count = 0
+    A = []
+    a = 0
+    for element in datos:
+        Z = re.search('\%'+'ID'+'\^',element)
+        if bool(Z) == True:
+            a = count
+            A.append(a)
+        count += 1
+    if len(A)>0:
+        C = []
+        for b in A:
+            B = re.split('\:',datos[b])
+            C.append(B)
+        D = []
+        for element in C:
+            D.append(element[2])
+        E = []
+        for element in D:
+            x = re.split('\^',element)
+            E.append(x[1])
+        F=[]
+        for element in E:
+            x = re.split('\%',element)
+            F.append(float(x[0]))
+        value = max(F)
+    else:
+        value=0.
+    return value
+
+
+# In[8]:
+
+New2=[]
+count = 0
+for element in read_exons():
+    New2.append([])
+    New2[count].append(element)
+    for gene in read_exons()[element]:
+        if gene['gen_id'] not in New2[count]:
+            New2[count].append(gene['gen_id'])
+    count += 1
+#print New2   
+New = [None]*len(New2)
+for element in New2:
+    b = int(re.split('\_',element[0])[1])
+    New[b-1] = element
+
+
+# In[9]:
+
+counter = 0
 # Iterando sobre los contigs (write_summarized)
 for i in range(0, (len(data_contigs))):
+    #print data_contigs[i]
     contigs_id = data_contigs[i]['id']
     contig_len = data_contigs[i]['len']
     #contig_multi = data_contigs[i]['multi']
@@ -247,57 +338,102 @@ for i in range(0, (len(data_contigs))):
     intervals = []
     str_intervals = ""
     sum_len_4_coverage = 0
+    
+    ###########################################################################################################
+    count2 = 1
+    Parr = []
+    #print New[counter]
+    while count2 < len(New[counter]):
+        v = int(re.split('\_',New[counter][count2])[0])-1
+        Parr.append(maxper(v))
+        count2 += 1
+    grt = max(Parr)
+    #print grt
+    ###
+    count3 = 1
+    if grt != 0.:
+        while count3 < len(New[counter]):
+            v = int(re.split('\_',New[counter][count3])[0])-1
+            datos = annotation_lines[v].strip().split()
+            for element in datos:
+                Z1 = re.search(str(grt)+'\%'+'ID',element)
+                Z2 = re.search(str(int(grt))+'\%'+'ID',element)
+                if bool(Z1) == True or bool(Z2) == True:
+                    ident = annotation_lines[v].strip().split()[0]
+            count3 +=1
+    else:
+        ident='no'
+    #print ident
+    ###
+    counter += 1
+    ############################################################################################
+    #write_domains(str_rest, global_annotation[current_gen_id]['global'], data_contigs[i] )
     for j in range(0, (len(contig_exons))):
         current = contig_exons[j]
         current_gen_id = current['gen_id']
-        interval_data = [ current_gen_id,
-            ("-".join( [current['intervalo_a'],
-            current['intervalo_b']])),
-            current['direction'],
-            current['num']
-        ]
-        interval = ";".join(interval_data)
-        intervals.append(interval)
-        sequences = ""
-        count = False
-        if( (len(contig_exons) - 1) == j):
-            sequences = get_sequences(current_gen_id, sequences_dic,\
-            global_annotation)
+        #print current_gen_id
+        if current_gen_id == ident:
+            interval_data = [ current_gen_id,
+                ("-".join( [current['intervalo_a'],
+                current['intervalo_b']])),
+                current['direction'],
+                current['num']
+            ]
+            interval = ";".join(interval_data)
+            intervals.append(interval)
+            sequences = ""
+            count = False
+            if( (len(contig_exons) - 1) == j):
+                sequences = get_sequences(current_gen_id, sequences_dic,                global_annotation)
 
-            str_rest = "\t".join(["|".join(intervals), sequences])
-            str_intervals = str_intervals + str_rest
-            # Test write_domains
-            count = write_domains(
-                str_rest,
-                global_annotation[current_gen_id]['global'],
-                data_contigs[i]
-            );
-
-            #str_intervals = ""
-
-        else:
-            next_gen_id = contig_exons[j+1]['gen_id']
-            if(not (current_gen_id == next_gen_id)):
-                sequences = get_sequences(current_gen_id, sequences_dic,\
-                 global_annotation)
-                str_intervals = "\t".join(["|".join(intervals), sequences])+'\t'
-                #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
-
+                str_rest = "\t".join(["|".join(intervals), sequences])
+                str_intervals = str_intervals + str_rest
                 # Test write_domains
                 count = write_domains(
-                    str_intervals,
+                    str_rest,
                     global_annotation[current_gen_id]['global'],
                     data_contigs[i]
                 );
+                #if i == 2:
+                    #A = global_annotation[current_gen_id]['global']['classified']
+                    #print i, A#,'true'
+                #str_intervals = ""
 
-                intervals = []
-        # coverage calculation
-        if(count):
-            sum_len_4_coverage = sum_len_4_coverage + (int(current['intervalo_b']) - int(current['intervalo_a']))
+            else:
+                next_gen_id = contig_exons[j+1]['gen_id']
+                if(not (current_gen_id == next_gen_id)):
+                    sequences = get_sequences(current_gen_id, sequences_dic,                     global_annotation)
+                    str_intervals = "\t".join(["|".join(intervals), sequences])+'\t'
+                    #str_intervals = str_intervals + "\t".join(["|".join(intervals), sequences]) + "\t"
+
+                    # Test write_domains
+                    count = write_domains(
+                        str_intervals,
+                        global_annotation[current_gen_id]['global'],
+                        data_contigs[i]
+                    );
+                    #if i == 3:
+                    #    print str_intervals[0],i,global_annotation[current_gen_id]['global']#['gen_id']
+                    intervals = []
+            # coverage calculation
+            #Aquí no sé si lleva dicha identación o una edentación menos pero creo que sí va aquí#
+            if(count):
+                sum_len_4_coverage = sum_len_4_coverage + (int(current['intervalo_b']) - int(current['intervalo_a']))
+        elif ident == 'no':
+            if( (len(contig_exons) - 1) == j):
+                sequences = get_sequences(current_gen_id, sequences_dic,                global_annotation)
+    
+                str_rest = "\t".join(["|".join(intervals), sequences])
+                str_intervals = str_intervals + str_rest
+            else:
+                next_gen_id = contig_exons[j+1]['gen_id']
+                if(not (current_gen_id == next_gen_id)):
+                    sequences = get_sequences(current_gen_id, sequences_dic,                     global_annotation)
+                    str_intervals = "\t".join(["|".join(intervals), sequences])+'\t'
+            
     cover = coverage(contig_len, sum_len_4_coverage)
     annotation_line_data = ""
-    line = contigs_id+"\tlen="+contig_len+"\t"+str(cover)+"%\t"+str_intervals+\
-    annotation_line_data+"\n"
+    line = contigs_id+"\tlen="+contig_len+"\t"+str(cover)+"%\t"+str_intervals+    annotation_line_data+"\n"
     data.write(line)
 
 not_found.close()
@@ -314,3 +450,9 @@ virus.close()
 virus_fa.close()
 unclassified.close()
 unclassified_fa.close()
+
+
+# In[ ]:
+
+
+
