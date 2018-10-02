@@ -300,7 +300,6 @@ for i in range(0, (len(data_contigs))):                                        #
     for j in range(0, (len(contig_exons))):
         current = contig_exons[j]
         current_gen_id = current['gen_id']
-        # if current_gen_id == ident:
         if current_gen_id == ident or ident == "no":
             interval_data = [ current_gen_id,
                 ("-".join( [current['intervalo_a'],
@@ -333,16 +332,6 @@ for i in range(0, (len(data_contigs))):                                        #
                     intervals = []
             if(count):
                 sum_len_4_coverage = sum_len_4_coverage + (int(current['intervalo_b']) - int(current['intervalo_a']))
-        # elif ident == 'no':
-        #     if( (len(contig_exons) - 1) == j):
-        #         sequences = get_sequences(current_gen_id, sequences_dic, global_annotation)
-        #         str_rest = "\t".join(["|".join(intervals), sequences])
-        #         str_intervals = str_intervals + str_rest
-        #     else:
-        #         next_gen_id = contig_exons[j+1]['gen_id']
-        #         if(not (current_gen_id == next_gen_id)):
-        #             sequences = get_sequences(current_gen_id, sequences_dic, global_annotation)
-        #             str_intervals = "\t".join(["|".join(intervals), sequences])+'\t'
     cover = coverage(contig_len, sum_len_4_coverage)
     annotation_line_data = ""
     line = contigs_id+"\tlen="+contig_len+"\t"+str(cover)+"%\t"+str_intervals+annotation_line_data+"\n"
