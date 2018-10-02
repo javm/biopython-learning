@@ -9,11 +9,11 @@ import os, sys
 
 #----------------------------- Opens and write files ---------------------------
 
-contigs = open('contigs.txt', 'r')
-exons = open('exons.txt', 'r')
-nucleotides = open('nuc.txt', 'r')
-proteins = open('prot.txt', 'r')
-annotation = open('annotation_out.txt', 'r')
+contigs = open('contigs_50.fa', 'r')
+exons = open('exons_50.txt', 'r')
+nucleotides = open('nuc_50.txt', 'r')
+proteins = open('prot_50.txt', 'r')
+annotation = open('annotation_out_50.xls', 'r')
 
 data = open('summarized_set.txt','w')                  # output: summarized.txt
 not_found =  open('not_found_set.txt', 'w')             # output: not_found.txt
