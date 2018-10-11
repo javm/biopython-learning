@@ -16,7 +16,7 @@ proteins = open('prot.txt', 'r')
 annotation = open('annotation_out.txt', 'r')
 
 data = open('summarized_set.txt','w')                  # output: summarized.txt
-not_found =  open('not_found_set.txt', 'w')             # output: not_found.txt
+not_found =  open('not_found_set.fa', 'w')             # output: not_found.txt
 
 #------------------------------------ Open sets --------------------------------
 
