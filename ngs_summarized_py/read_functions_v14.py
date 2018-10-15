@@ -79,20 +79,8 @@ def read_annotation(annotation_lines):
         else:
             g = False                                             #unclassified
         annotation_dic['gen_id'] = data[0]                        #key <gen_id>
-
-        Z = re.search('\%'+'ID'+'\^',annotation_lines[i].strip())
-        if bool(Z) == True:
-            A = re.split('\:',data[7])
-            B = re.split('\^',A[2])
-            C = re.split('\%',B[1])
-            percent = C[0]
-            percent = str(float(percent))
-        elif bool(Z) == False:
-            percent = str(float(0))
-
         annotation_dic['global'] = {'interval_prot': data[6],     #key <global>
          'recname': data[7],                                     #key <RecName>
-         'percentage': percent,
          'full': data_full[-1],                                     #key <Full>
          'classified': g                                  #key <Classification>
          }
@@ -112,7 +100,7 @@ def read_annotation(annotation_lines):
 #         recname = get_recname['recname']
 #     return annotation_ids
 #------------------------ Module 5: read_global_annotation --------------------#
-# Converts list to hash and assosiate the gen_id with its corresponding global #                       #
+#                           Converts the list to a hash                        #
 #------------------------------------------------------------------------------#
 def read_global_annotation(annotation_lines):
     annotations_list = read_annotation(annotation_lines)
@@ -124,8 +112,6 @@ def read_global_annotation(annotation_lines):
 #-------------------------- Module 6: Reading sequences -----------------------#
 #    It makes an association between gen ids and the corresponding sequence    #
 #------------------------------------------------------------------------------#
-#sequences_dic = rf.read_sequences(sequences_dic, 'nuc', nucleotides_lines)
-#------------------------------------------------------------------------------#
 def read_sequences(sequences_out, sequences_name, lines):
     for i in range(0, len(lines), 2):
         gen_id = lines[i].lstrip('>')
@@ -136,4 +122,3 @@ def read_sequences(sequences_out, sequences_name, lines):
         sequence = lines[i+1].strip()
         sequences_out[gen_id][sequences_name] = sequence
     return sequences_out
-#------------------------------------------------------------------------------#
