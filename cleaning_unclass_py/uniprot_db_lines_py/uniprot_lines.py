@@ -10,13 +10,7 @@ A2 = []
 element = ''
 ######################### Procesamiento de datos  ##############################
 
-# data
-for line1 in uniprot_db:
-    line_parts = line1.strip().split()
-    if(len(line_parts) > 2){
-        
-    }
-    A1.append(lines_db)                              # guarda en A1 (arreglo)
+                        # guarda en A1 (arreglo)
 # print(A1[0])
 
 for i in range(0, len(A1)):
