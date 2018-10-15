@@ -12,7 +12,10 @@ element = ''
 
 # data
 for line1 in uniprot_db:
-    lines_db = line1.strip()
+    line_parts = line1.strip().split()
+    if(len(line_parts) > 2){
+        
+    }
     A1.append(lines_db)                              # guarda en A1 (arreglo)
 # print(A1[0])
 
@@ -30,6 +33,8 @@ for i in range(0, len(A1)):
 
 for i in A2:
     print (i)
+
+
 
 
     #print(A1[i])
