@@ -5,6 +5,7 @@ import re
 uniprot_db = open("uniprot.txt", "r")
 unclassified = open("unclassified_set.txt", "r")
 uniprot_lines = open('uniprot_lines.txt','w')
+classified = open("classified.txt", "w")
 
 # Putting uniprot in one line
 
@@ -58,14 +59,24 @@ for l in olu_lines:
     }
 
 #print uniprot_dict
-
+#^Bacteria;      Proteobacteria; Gammaproteobacteria;    Enterobacteriales;      Enterobacteriaceae;     Klebsiella 
 
 def uniprot_info(h, ui):
      s = ''
-     d = h[ui]
-     classification = d['classification]
- 
-     s = '^'+d['domain']+';\t'
+     d = False
+     if h.has_key(ui):
+          d = h[ui]
+          print d
+     else:
+          return 'False'
+     classification = d['classification']
+     # c_p = clasification.split(";")
+     # for part in cp:
+     #     c = part.split("=")
+     #     for d in c:
+
+     s = '^'+d['domain']+';\t'+classification
+     return s
 
 
 ######################### Procesamiento de datos  ##############################
@@ -78,9 +89,8 @@ for line in unclassified_lines:
      cols = parts[6].split('_')
      if (len(cols) > 1):
           uniprot_id = cols[1]
-          unclassified_ids[parts[0]] = uniprot_id.split('^')[0]
-          
-          #subs(parts[6], 'False', uniprot_extract(uniprot_id))
-          #out.write(parts)
-     #out.write(line)
-print unclassified_ids
+          #uclassified_ids[parts[0]] = uniprot_id.split('^')[0]
+          id = uniprot_id.split('^')[0]
+          line = line.replace('False', uniprot_info(uniprot_dict, id))
+     classified.write(line)
+
